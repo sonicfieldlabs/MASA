@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/profile-publication.schema.json",
+  "title": "MASA 0.1.0 Publication profile",
+  "allOf": [
+    { "$ref": "matter-record.schema.json" },
+    {
+      "required": ["publication"],
+      "properties": {
+        "profiles": { "contains": { "const": "publication" } },
+        "disclosure": { "const": "public" },
+        "publication": {
+          "allOf": [
+            { "$ref": "definitions.schema.json#/$defs/Publication" },
+            {
+              "properties": {
+                "policyEvaluation": {
+                  "allOf": [
+                    { "$ref": "definitions.schema.json#/$defs/PolicyEvaluation" },
+                    { "properties": { "result": { "const": "permitted" } } }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "anyOf": [
+        {
+          "properties": {
+            "history": {
+              "type": "object",
+              "required": ["mode", "events"],
+              "properties": {
+                "mode": { "const": "embedded" },
+                "events": {
+                  "contains": {
+                    "allOf": [
+                      { "$ref": "definitions.schema.json#/$defs/OperationReceipt" },
+                      {
+                        "properties": {
+                          "operationType": { "const": "matter.publish" },
+                          "effectClass": { "const": "publish" },
+                          "finalStatus": { "const": "completed" },
+                          "reversibility": { "const": "irreversible" },
+                          "policyEvaluation": {
+                            "allOf": [
+                              { "$ref": "definitions.schema.json#/$defs/PolicyEvaluation" },
+                              { "properties": { "result": { "const": "permitted" } } }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "history": {
+              "type": "object",
+              "required": ["mode", "eventIds"],
+              "properties": {
+                "mode": { "const": "external" },
+                "eventIds": { "minItems": 1 }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

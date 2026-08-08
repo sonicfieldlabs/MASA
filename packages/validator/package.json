@@ -1,0 +1,32 @@
+{
+  "name": "@sonicfield/masa-validator",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Offline structural, semantic, profile, and public-safety validation for MASA 0.1.0",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "LICENSE",
+    "dist/**/*.js",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.ts.map"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --pretty false",
+    "test": "vitest run src"
+  },
+  "dependencies": {
+    "@sonicfield/masa": "workspace:*",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
+  }
+}

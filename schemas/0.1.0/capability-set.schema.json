@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/capability-set.schema.json",
+  "title": "MASA 0.1.0 capability set",
+  "description": "A versioned implementation catalog for capability discovery, including the masa://capabilities MCP resource.",
+  "type": "object",
+  "required": [
+    "capabilitySetType",
+    "capabilitySetVersion",
+    "masaVersion",
+    "id",
+    "implementation",
+    "generatedAt",
+    "capabilities",
+    "extensions"
+  ],
+  "properties": {
+    "capabilitySetType": { "const": "masa-capability-set" },
+    "capabilitySetVersion": { "const": "0.1.0" },
+    "masaVersion": { "const": "0.1.0" },
+    "id": { "$ref": "definitions.schema.json#/$defs/Id" },
+    "implementation": {
+      "type": "object",
+      "required": ["id", "name", "version"],
+      "properties": {
+        "id": { "$ref": "definitions.schema.json#/$defs/Id" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "version": { "type": "string", "minLength": 1, "maxLength": 128 }
+      },
+      "additionalProperties": false
+    },
+    "generatedAt": { "$ref": "definitions.schema.json#/$defs/Timestamp" },
+    "capabilities": {
+      "type": "array",
+      "items": { "$ref": "capability.schema.json" },
+      "minItems": 1
+    },
+    "extensions": { "$ref": "definitions.schema.json#/$defs/ExtensionBag" }
+  },
+  "additionalProperties": false
+}

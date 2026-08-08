@@ -1,0 +1,214 @@
+{
+  "$schema": "https://masa.sonicfield.org/schemas/0.1.0/matter-record.schema.json",
+  "masaVersion": "0.1.0",
+  "id": "urn:uuid:00000000-0000-4000-8000-000000000008",
+  "type": "masa:MatterRecord",
+  "revision": 1,
+  "profiles": [
+    "core"
+  ],
+  "createdAt": "2026-07-27T12:00:00Z",
+  "createdBy": "urn:uuid:00000000-0000-4000-8000-000000000101",
+  "title": "Explicitly deleted representation state",
+  "description": "A representation is registered without claiming that it is identical to a physical event or perceptual object.",
+  "actors": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000101",
+      "type": "masa:Actor",
+      "actorKind": "human",
+      "roles": [
+        "record-creator"
+      ],
+      "name": {
+        "state": "known",
+        "value": "Local example author"
+      },
+      "disclosure": "private",
+      "extensions": {}
+    }
+  ],
+  "sources": [],
+  "representations": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000201",
+      "type": "masa:Representation",
+      "role": "tombstone",
+      "mediaType": "application/octet-stream",
+      "format": {
+        "state": "deleted",
+        "reason": "The local fixture models an authorized deletion without retaining removed values.",
+        "receiptRefs": [
+          "urn:uuid:00000000-0000-4000-8000-000000000c01"
+        ]
+      },
+      "availability": "deleted",
+      "locator": {
+        "state": "deleted",
+        "reason": "The local fixture models an authorized deletion without retaining removed values.",
+        "receiptRefs": [
+          "urn:uuid:00000000-0000-4000-8000-000000000c01"
+        ]
+      },
+      "integrity": {
+        "state": "deleted",
+        "reason": "The local fixture models an authorized deletion without retaining removed values.",
+        "receiptRefs": [
+          "urn:uuid:00000000-0000-4000-8000-000000000c01"
+        ]
+      },
+      "policyRefs": [
+        "urn:uuid:00000000-0000-4000-8000-000000000301"
+      ],
+      "disclosure": "private",
+      "extensions": {}
+    }
+  ],
+  "encounters": [],
+  "apertures": [],
+  "listeningPasses": [],
+  "claims": [],
+  "regions": [],
+  "measurements": [],
+  "observations": [],
+  "mappings": [],
+  "relations": [],
+  "policies": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000301",
+      "type": "masa:Policy",
+      "policyKind": "composite",
+      "issuer": "urn:uuid:00000000-0000-4000-8000-000000000101",
+      "status": "active",
+      "disclosure": "private",
+      "rules": [
+        {
+          "id": "urn:uuid:00000000-0000-4000-8000-000000000302",
+          "effect": "permission",
+          "actions": [
+            "read",
+            "validate",
+            "delete"
+          ],
+          "targets": [
+            "urn:uuid:00000000-0000-4000-8000-000000000008",
+            "urn:uuid:00000000-0000-4000-8000-000000000201"
+          ],
+          "subjects": [
+            "urn:uuid:00000000-0000-4000-8000-000000000101"
+          ],
+          "authorityBasis": {
+            "state": "known",
+            "value": "Local creator declaration for this private example"
+          },
+          "constraints": {
+            "network": "prohibited"
+          },
+          "duties": [
+            "Preserve provenance and unknown states"
+          ]
+        }
+      ],
+      "review": {
+        "contact": {
+          "state": "unknown",
+          "reason": "No external contact exists for a local fixture.",
+          "reasonCode": "local_fixture"
+        },
+        "route": {
+          "state": "known",
+          "value": "Review the record with the local MASA CLI"
+        }
+      },
+      "extensions": {}
+    }
+  ],
+  "contexts": [],
+  "agentRuns": [],
+  "capabilities": [],
+  "integrity": {
+    "state": "unknown",
+    "reason": "The standalone example is an account rather than a bundled byte artifact.",
+    "reasonCode": "not_bundled"
+  },
+  "history": {
+    "mode": "embedded",
+    "events": [
+      {
+        "id": "urn:uuid:00000000-0000-4000-8000-000000000c01",
+        "type": "masa:OperationReceipt",
+        "recordId": "urn:uuid:00000000-0000-4000-8000-000000000008",
+        "sequence": 0,
+        "operationType": "matter.delete",
+        "effectClass": "delete",
+        "finalStatus": "completed",
+        "startedAt": "2026-07-27T12:01:00Z",
+        "endedAt": "2026-07-27T12:01:01Z",
+        "actors": [
+          "urn:uuid:00000000-0000-4000-8000-000000000101"
+        ],
+        "inputs": [
+          "urn:uuid:00000000-0000-4000-8000-000000000201"
+        ],
+        "outputs": [],
+        "tool": {
+          "state": "known",
+          "value": {
+            "id": "urn:uuid:00000000-0000-4000-8000-000000000c02",
+            "name": "Authorized deletion fixture",
+            "version": {
+              "state": "known",
+              "value": "0.1.0"
+            },
+            "kind": "human-procedure"
+          }
+        },
+        "parameters": {
+          "retained": "tombstone only"
+        },
+        "policyEvaluation": {
+          "action": "delete",
+          "targets": [
+            "urn:uuid:00000000-0000-4000-8000-000000000201"
+          ],
+          "policyRefs": [
+            "urn:uuid:00000000-0000-4000-8000-000000000301"
+          ],
+          "result": "permitted",
+          "evaluatedAt": "2026-07-27T12:01:00Z",
+          "evaluator": "urn:uuid:00000000-0000-4000-8000-000000000101",
+          "authorityRefs": [
+            "urn:uuid:00000000-0000-4000-8000-000000000302"
+          ],
+          "reasons": [
+            "The active local fixture policy explicitly permits this bounded operation."
+          ]
+        },
+        "reversibility": "irreversible",
+        "determinism": {
+          "state": "deterministic"
+        },
+        "warnings": [],
+        "errors": [],
+        "claimRefs": [],
+        "extensions": {}
+      }
+    ]
+  },
+  "disclosure": "private",
+  "registers": [
+    "digital-technical"
+  ],
+  "scales": [
+    "object-event"
+  ],
+  "extensions": {
+    "example:roundtrip": {
+      "deep": {
+        "values": [
+          "preserve",
+          "without-interpretation"
+        ]
+      }
+    }
+  }
+}

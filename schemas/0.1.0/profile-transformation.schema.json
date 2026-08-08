@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/profile-transformation.schema.json",
+  "title": "MASA 0.1.0 Transformation profile",
+  "allOf": [
+    { "$ref": "matter-record.schema.json" },
+    {
+      "properties": {
+        "profiles": { "contains": { "const": "transformation" } }
+      },
+      "anyOf": [
+        {
+          "properties": {
+            "history": {
+              "type": "object",
+              "required": ["mode", "events"],
+              "properties": {
+                "mode": { "const": "embedded" },
+                "events": { "contains": { "$ref": "#/$defs/TransformationOperation" } }
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "history": {
+              "type": "object",
+              "required": ["mode", "eventIds"],
+              "properties": {
+                "mode": { "const": "external" },
+                "eventIds": { "minItems": 1 }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "if": {
+        "properties": {
+          "history": {
+            "type": "object",
+            "required": ["mode", "events"],
+            "properties": {
+              "mode": { "const": "embedded" },
+              "events": { "contains": { "$ref": "#/$defs/CompletedTransformation" } }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "representations": { "minItems": 2 },
+          "relations": {
+            "contains": {
+              "allOf": [
+                { "$ref": "definitions.schema.json#/$defs/Relation" },
+                {
+                  "required": ["operationRef"],
+                  "properties": {
+                    "predicate": {
+                      "enum": ["masa:derived-from", "masa:derivation-of", "masa:segmented-from", "masa:isolated-from", "masa:variation-of", "masa:rendered-as", "masa:parent-of", "masa:child-of"]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "TransformationOperation": {
+      "allOf": [
+        { "$ref": "definitions.schema.json#/$defs/OperationReceipt" },
+        {
+          "properties": {
+            "operationType": {
+              "enum": ["matter.segment", "matter.isolate", "matter.transform", "matter.sculpt", "matter.recompose", "matter.render", "matter.compensate"]
+            },
+            "effectClass": { "enum": ["derive", "transform", "render"] }
+          }
+        }
+      ]
+    },
+    "CompletedTransformation": {
+      "allOf": [
+        { "$ref": "#/$defs/TransformationOperation" },
+        {
+          "properties": {
+            "finalStatus": { "const": "completed" },
+            "outputs": { "minItems": 1 },
+            "parameters": {
+              "type": "object",
+              "required": ["preservationIntent"],
+              "properties": {
+                "preservationIntent": { "$ref": "#/$defs/PreservationIntent" }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "PreservationIntent": {
+      "type": "object",
+      "required": ["properties", "verification"],
+      "properties": {
+        "properties": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 512 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "verification": { "$ref": "definitions.schema.json#/$defs/QualifiedValue" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

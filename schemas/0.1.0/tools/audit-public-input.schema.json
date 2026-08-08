@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/tools/audit-public-input.schema.json",
+  "title": "matter.audit_public_export input",
+  "type": "object",
+  "required": ["path"],
+  "properties": {
+    "path": { "type": "string", "minLength": 1, "maxLength": 4096 }
+  },
+  "additionalProperties": false
+}
+

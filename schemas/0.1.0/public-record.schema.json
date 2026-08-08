@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/public-record.schema.json",
+  "title": "MASA 0.1.0 public MatterRecord projection",
+  "description": "An allowlisted public projection. Runtime publication validation must additionally check reference closure, approved extension namespaces, paths, secrets, protected precision, and policy authority.",
+  "allOf": [
+    { "$ref": "profile-publication.schema.json" },
+    {
+      "type": "object",
+      "properties": {
+        "disclosure": { "const": "public" },
+        "actors": {
+          "items": {
+            "allOf": [
+              { "$ref": "definitions.schema.json#/$defs/Actor" },
+              { "properties": { "disclosure": { "const": "public" } } }
+            ]
+          }
+        },
+        "sources": {
+          "items": {
+            "allOf": [
+              { "$ref": "definitions.schema.json#/$defs/Source" },
+              { "properties": { "disclosure": { "const": "public" } } }
+            ]
+          }
+        },
+        "representations": {
+          "items": {
+            "allOf": [
+              { "$ref": "definitions.schema.json#/$defs/Representation" },
+              {
+                "properties": {
+                  "disclosure": { "const": "public" },
+                  "role": { "enum": ["derivative", "preview", "render", "data", "prompt", "score", "model-output", "performance-capture", "tombstone", "other"] },
+                  "availability": { "enum": ["available", "partial", "deleted"] }
+                }
+              }
+            ]
+          }
+        },
+        "listeningPasses": {
+          "items": {
+            "allOf": [
+              { "$ref": "definitions.schema.json#/$defs/ListeningPass" },
+              { "properties": { "disclosure": { "const": "public" } } }
+            ]
+          }
+        },
+        "claims": {
+          "items": {
+            "allOf": [
+              { "$ref": "definitions.schema.json#/$defs/Claim" },
+              { "properties": { "disclosure": { "const": "public" } } }
+            ]
+          }
+        },
+        "observations": {
+          "items": {
+            "allOf": [
+              { "$ref": "definitions.schema.json#/$defs/Observation" },
+              { "properties": { "disclosure": { "const": "public" } } }
+            ]
+          }
+        },
+        "policies": {
+          "items": {
+            "allOf": [
+              { "$ref": "definitions.schema.json#/$defs/Policy" },
+              { "properties": { "disclosure": { "const": "public" } } }
+            ]
+          }
+        },
+        "contexts": {
+          "items": {
+            "allOf": [
+              { "$ref": "definitions.schema.json#/$defs/Context" },
+              { "properties": { "disclosure": { "const": "public" } } }
+            ]
+          }
+        },
+        "publication": {
+          "allOf": [
+            { "$ref": "definitions.schema.json#/$defs/Publication" },
+            {
+              "properties": {
+                "policyEvaluation": {
+                  "allOf": [
+                    { "$ref": "definitions.schema.json#/$defs/PolicyEvaluation" },
+                    { "properties": { "result": { "const": "permitted" } } }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

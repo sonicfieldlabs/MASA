@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/profile-listening.schema.json",
+  "title": "MASA 0.1.0 Listening profile",
+  "allOf": [
+    { "$ref": "matter-record.schema.json" },
+    {
+      "properties": {
+        "profiles": { "contains": { "const": "listening" } },
+        "encounters": { "minItems": 1 },
+        "apertures": { "minItems": 1 },
+        "listeningPasses": { "minItems": 1 }
+      }
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "class": "agent-host",
+  "diagnostics": [],
+  "extensions": {},
+  "fixtureManifestDigest": {
+    "algorithm": "sha-256",
+    "byteLength": 298233,
+    "digest": "0240f5403d9d626c3eef75a55eb640cea84cf5b6d17d2824fe4874561c27be95",
+    "status": "verified",
+    "verifiedAt": "2026-08-07T16:28:56.467Z"
+  },
+  "id": "urn:uuid:10000000-0000-4000-8000-000000000004",
+  "implementation": {
+    "name": "MASA local TypeScript reference",
+    "version": "0.1.0"
+  },
+  "masaVersion": "0.1.0",
+  "migrationStatus": "not_applicable",
+  "platform": {
+    "architecture": "arm64",
+    "os": "darwin",
+    "runtime": "node v22.22.3"
+  },
+  "profile": "agent",
+  "runAt": "2026-08-07T16:28:56.467Z",
+  "status": "conformant",
+  "subject": "@sonicfield/masa workspace",
+  "suite": {
+    "name": "masa-typescript-reference-conformance",
+    "version": "0.1.0"
+  },
+  "tests": [
+    {
+      "diagnostics": [],
+      "id": "agent-host.capabilities-and-record",
+      "status": "conformant"
+    },
+    {
+      "diagnostics": [],
+      "id": "agent-host.mcp-stdio",
+      "status": "conformant"
+    }
+  ],
+  "type": "masa:ConformanceResult"
+}

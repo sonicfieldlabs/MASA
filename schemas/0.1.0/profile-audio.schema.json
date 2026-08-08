@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/profile-audio.schema.json",
+  "title": "MASA 0.1.0 Audio profile",
+  "allOf": [
+    { "$ref": "matter-record.schema.json" },
+    {
+      "properties": {
+        "profiles": { "contains": { "const": "audio" } },
+        "representations": {
+          "contains": {
+            "allOf": [
+              { "$ref": "definitions.schema.json#/$defs/Representation" },
+              {
+                "required": ["audio"],
+                "properties": {
+                  "mediaType": { "pattern": "^audio/" },
+                  "audio": { "$ref": "definitions.schema.json#/$defs/AudioTechnical" }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

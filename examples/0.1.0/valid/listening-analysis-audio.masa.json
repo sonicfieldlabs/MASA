@@ -1,0 +1,408 @@
+{
+  "$schema": "https://masa.sonicfield.org/schemas/0.1.0/matter-record.schema.json",
+  "masaVersion": "0.1.0",
+  "id": "urn:uuid:00000000-0000-4000-8000-000000000002",
+  "type": "masa:MatterRecord",
+  "revision": 1,
+  "profiles": [
+    "core",
+    "audio",
+    "listening",
+    "analysis"
+  ],
+  "createdAt": "2026-07-27T12:00:00Z",
+  "createdBy": "urn:uuid:00000000-0000-4000-8000-000000000101",
+  "title": "Plural listening and situated analysis",
+  "description": "A representation is registered without claiming that it is identical to a physical event or perceptual object.",
+  "actors": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000101",
+      "type": "masa:Actor",
+      "actorKind": "human",
+      "roles": [
+        "record-creator"
+      ],
+      "name": {
+        "state": "known",
+        "value": "Local example author"
+      },
+      "disclosure": "private",
+      "extensions": {}
+    }
+  ],
+  "sources": [],
+  "representations": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000201",
+      "type": "masa:Representation",
+      "role": "source-representation",
+      "mediaType": "audio/wav",
+      "format": {
+        "state": "unknown",
+        "reason": "The example does not include source bytes.",
+        "reasonCode": "not_bundled"
+      },
+      "availability": "unavailable",
+      "locator": {
+        "state": "unavailable",
+        "reason": "No asset is bundled with this minimal example.",
+        "reasonCode": "not_bundled"
+      },
+      "integrity": {
+        "state": "unknown",
+        "reason": "Integrity cannot be verified without bytes.",
+        "reasonCode": "not_bundled"
+      },
+      "policyRefs": [
+        "urn:uuid:00000000-0000-4000-8000-000000000301"
+      ],
+      "disclosure": "private",
+      "extensions": {},
+      "audio": {
+        "durationSeconds": {
+          "state": "known",
+          "value": 1
+        },
+        "channels": {
+          "state": "known",
+          "value": 1
+        },
+        "sampleRateHz": {
+          "state": "known",
+          "value": 48000
+        },
+        "bitDepth": {
+          "state": "known",
+          "value": 24
+        },
+        "encoding": {
+          "state": "known",
+          "value": "PCM signed integer little-endian"
+        },
+        "spatialFormat": {
+          "state": "known",
+          "value": "mono"
+        },
+        "levelContext": {
+          "state": "unknown",
+          "reason": "No calibrated playback or capture level is attached to this fixture.",
+          "reasonCode": "not_calibrated"
+        }
+      }
+    }
+  ],
+  "encounters": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000501",
+      "type": "masa:Encounter",
+      "occurredAt": "2026-07-27T12:02:00Z",
+      "actors": [
+        "urn:uuid:00000000-0000-4000-8000-000000000101"
+      ],
+      "question": "How does the short event hold together across focal and global attention?",
+      "position": {
+        "state": "known",
+        "value": "Headphones, seated, local studio; playback level not calibrated"
+      },
+      "accessConditions": [
+        "One-channel unavailable source is represented by fixture metadata only"
+      ],
+      "contextRefs": [],
+      "extensions": {}
+    }
+  ],
+  "apertures": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000502",
+      "type": "masa:Aperture",
+      "description": "Full-band one-second aperture without preprocessing",
+      "channels": [
+        "mono"
+      ],
+      "ranges": [
+        {
+          "kind": "spectral",
+          "unit": "Hz",
+          "start": 20,
+          "end": 20000
+        }
+      ],
+      "windows": [
+        {
+          "kind": "temporal",
+          "unit": "s",
+          "start": 0,
+          "end": 1
+        }
+      ],
+      "thresholds": [],
+      "preprocessing": [],
+      "exclusions": [],
+      "blindSpots": [
+        "Unavailable source bytes prevent independent replay"
+      ],
+      "extensions": {}
+    }
+  ],
+  "listeningPasses": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000505",
+      "type": "masa:ListeningPass",
+      "actors": [
+        "urn:uuid:00000000-0000-4000-8000-000000000101"
+      ],
+      "representations": [
+        "urn:uuid:00000000-0000-4000-8000-000000000201"
+      ],
+      "encounterRef": "urn:uuid:00000000-0000-4000-8000-000000000501",
+      "apertureRef": "urn:uuid:00000000-0000-4000-8000-000000000502",
+      "modes": [
+        "focal",
+        "material"
+      ],
+      "createdAt": "2026-07-27T12:03:00Z",
+      "outcome": "claims",
+      "claimRefs": [
+        "urn:uuid:00000000-0000-4000-8000-000000000503"
+      ],
+      "disclosure": "private",
+      "extensions": {}
+    },
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000506",
+      "type": "masa:ListeningPass",
+      "actors": [
+        "urn:uuid:00000000-0000-4000-8000-000000000101"
+      ],
+      "representations": [
+        "urn:uuid:00000000-0000-4000-8000-000000000201"
+      ],
+      "encounterRef": "urn:uuid:00000000-0000-4000-8000-000000000501",
+      "apertureRef": "urn:uuid:00000000-0000-4000-8000-000000000502",
+      "modes": [
+        "global",
+        "material"
+      ],
+      "createdAt": "2026-07-27T12:04:00Z",
+      "outcome": "claims",
+      "claimRefs": [
+        "urn:uuid:00000000-0000-4000-8000-000000000504"
+      ],
+      "disclosure": "private",
+      "extensions": {}
+    }
+  ],
+  "claims": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000503",
+      "type": "masa:Claim",
+      "kind": "heard",
+      "about": [
+        "urn:uuid:00000000-0000-4000-8000-000000000201"
+      ],
+      "basis": [
+        {
+          "ref": "urn:uuid:00000000-0000-4000-8000-000000000201",
+          "role": "representation"
+        }
+      ],
+      "actor": "urn:uuid:00000000-0000-4000-8000-000000000101",
+      "createdAt": "2026-07-27T12:03:00Z",
+      "content": "The event was registered as one compact gesture.",
+      "method": {
+        "name": "focal listening pass",
+        "version": {
+          "state": "known",
+          "value": "1.0.0"
+        },
+        "parameters": {}
+      },
+      "listeningPassRef": "urn:uuid:00000000-0000-4000-8000-000000000505",
+      "confidence": {
+        "status": "not_assessed"
+      },
+      "uncertainty": [
+        "Playback level was not calibrated"
+      ],
+      "alternativeClaimRefs": [
+        "urn:uuid:00000000-0000-4000-8000-000000000504"
+      ],
+      "disclosure": "private",
+      "extensions": {}
+    },
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000504",
+      "type": "masa:Claim",
+      "kind": "heard",
+      "about": [
+        "urn:uuid:00000000-0000-4000-8000-000000000201"
+      ],
+      "basis": [
+        {
+          "ref": "urn:uuid:00000000-0000-4000-8000-000000000201",
+          "role": "representation"
+        }
+      ],
+      "actor": "urn:uuid:00000000-0000-4000-8000-000000000101",
+      "createdAt": "2026-07-27T12:04:00Z",
+      "content": "A second pass registered two successive material articulations rather than one gesture.",
+      "method": {
+        "name": "global re-listening pass",
+        "version": {
+          "state": "known",
+          "value": "1.0.0"
+        },
+        "parameters": {}
+      },
+      "listeningPassRef": "urn:uuid:00000000-0000-4000-8000-000000000506",
+      "confidence": {
+        "status": "not_assessed"
+      },
+      "uncertainty": [
+        "The two accounts remain intentionally unresolved"
+      ],
+      "alternativeClaimRefs": [
+        "urn:uuid:00000000-0000-4000-8000-000000000503"
+      ],
+      "disclosure": "private",
+      "extensions": {}
+    }
+  ],
+  "regions": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000507",
+      "type": "masa:Region",
+      "representationRef": "urn:uuid:00000000-0000-4000-8000-000000000201",
+      "basis": "temporal",
+      "bounds": {
+        "unit": "s",
+        "start": 0,
+        "end": 1
+      },
+      "createdBy": "urn:uuid:00000000-0000-4000-8000-000000000101",
+      "createdAt": "2026-07-27T12:05:00Z",
+      "method": {
+        "name": "fixture interval declaration",
+        "version": {
+          "state": "known",
+          "value": "1.0.0"
+        },
+        "parameters": {}
+      },
+      "uncertainty": [
+        "Region follows metadata duration because bytes are unavailable"
+      ],
+      "extensions": {}
+    }
+  ],
+  "measurements": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000508",
+      "type": "masa:Measurement",
+      "about": "urn:uuid:00000000-0000-4000-8000-000000000201",
+      "metric": "declared duration",
+      "value": 1,
+      "unit": "s",
+      "method": {
+        "name": "metadata declaration",
+        "version": {
+          "state": "known",
+          "value": "1.0.0"
+        },
+        "parameters": {}
+      },
+      "window": {
+        "kind": "temporal",
+        "unit": "s",
+        "start": 0,
+        "end": 1
+      },
+      "actor": "urn:uuid:00000000-0000-4000-8000-000000000101",
+      "createdAt": "2026-07-27T12:05:00Z",
+      "uncertainty": [
+        "Not remeasured from bytes"
+      ],
+      "extensions": {}
+    }
+  ],
+  "observations": [],
+  "mappings": [],
+  "relations": [],
+  "policies": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000301",
+      "type": "masa:Policy",
+      "policyKind": "composite",
+      "issuer": "urn:uuid:00000000-0000-4000-8000-000000000101",
+      "status": "active",
+      "disclosure": "private",
+      "rules": [
+        {
+          "id": "urn:uuid:00000000-0000-4000-8000-000000000302",
+          "effect": "permission",
+          "actions": [
+            "read",
+            "validate"
+          ],
+          "targets": [
+            "urn:uuid:00000000-0000-4000-8000-000000000002"
+          ],
+          "subjects": [
+            "urn:uuid:00000000-0000-4000-8000-000000000101"
+          ],
+          "authorityBasis": {
+            "state": "known",
+            "value": "Local creator declaration for this private example"
+          },
+          "constraints": {
+            "network": "prohibited"
+          },
+          "duties": [
+            "Preserve provenance and unknown states"
+          ]
+        }
+      ],
+      "review": {
+        "contact": {
+          "state": "unknown",
+          "reason": "No external contact exists for a local fixture.",
+          "reasonCode": "local_fixture"
+        },
+        "route": {
+          "state": "known",
+          "value": "Review the record with the local MASA CLI"
+        }
+      },
+      "extensions": {}
+    }
+  ],
+  "contexts": [],
+  "agentRuns": [],
+  "capabilities": [],
+  "integrity": {
+    "state": "unknown",
+    "reason": "The standalone example is an account rather than a bundled byte artifact.",
+    "reasonCode": "not_bundled"
+  },
+  "history": {
+    "mode": "embedded",
+    "events": []
+  },
+  "disclosure": "private",
+  "registers": [
+    "digital-technical"
+  ],
+  "scales": [
+    "object-event"
+  ],
+  "extensions": {
+    "example:roundtrip": {
+      "deep": {
+        "values": [
+          "preserve",
+          "without-interpretation"
+        ]
+      }
+    }
+  }
+}

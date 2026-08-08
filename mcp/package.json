@@ -1,0 +1,44 @@
+{
+  "name": "@sonicfield/masa-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Read-oriented local MCP server for MASA",
+  "type": "module",
+  "bin": {
+    "masa-mcp": "./dist/server.js"
+  },
+  "files": [
+    "LICENSE",
+    "dist/**/*.js",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.ts.map"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --pretty false",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "@sonicfield/masa": "workspace:*",
+    "@sonicfield/masa-bundle": "workspace:*",
+    "@sonicfield/masa-validator": "workspace:*",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "typescript": "7.0.2",
+    "vitest": "4.1.10"
+  },
+  "engines": {
+    "node": ">=22.20"
+  }
+}

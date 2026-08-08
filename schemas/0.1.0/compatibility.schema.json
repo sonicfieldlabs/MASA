@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/compatibility.schema.json",
+  "title": "MASA 0.1.0 compatibility manifest",
+  "type": "object",
+  "required": [
+    "id",
+    "type",
+    "application",
+    "applicationVersion",
+    "generatedAt",
+    "platforms",
+    "masa",
+    "status",
+    "conformanceResultRefs",
+    "extensions"
+  ],
+  "properties": {
+    "id": { "$ref": "definitions.schema.json#/$defs/Id" },
+    "type": { "const": "masa:CompatibilityManifest" },
+    "application": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "applicationVersion": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "generatedAt": { "$ref": "definitions.schema.json#/$defs/Timestamp" },
+    "platforms": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 512 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "masa": {
+      "type": "object",
+      "required": ["versions", "profiles", "classes", "extensions"],
+      "properties": {
+        "versions": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "profiles": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["core", "audio", "listening", "analysis", "transformation", "generation", "processing", "mapping", "agent", "publication"] },
+          "minItems": 1,
+          "uniqueItems": true,
+          "contains": { "const": "core" }
+        },
+        "classes": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["reader", "writer", "transformer", "agent-host", "publisher"] },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "extensions": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*:[0-9]+\\.[0-9]+(?:\\.[0-9]+)?(?:[-+][0-9A-Za-z.-]+)?$" },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "status": { "type": "string", "enum": ["conformant", "partial", "not_run", "failed", "unknown"] },
+    "conformanceResultRefs": {
+      "type": "array",
+      "items": { "$ref": "definitions.schema.json#/$defs/Id" },
+      "uniqueItems": true
+    },
+    "notes": { "type": "string", "maxLength": 4096 },
+    "extensions": { "$ref": "definitions.schema.json#/$defs/ExtensionBag" }
+  },
+  "additionalProperties": false
+}

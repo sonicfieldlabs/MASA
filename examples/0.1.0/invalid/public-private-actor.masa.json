@@ -1,0 +1,248 @@
+{
+  "$schema": "https://masa.sonicfield.org/schemas/0.1.0/matter-record.schema.json",
+  "masaVersion": "0.1.0",
+  "id": "urn:uuid:00000000-0000-4000-8000-000000000007",
+  "type": "masa:MatterRecord",
+  "revision": 1,
+  "profiles": [
+    "core",
+    "publication"
+  ],
+  "createdAt": "2026-07-27T12:00:00Z",
+  "createdBy": "urn:uuid:00000000-0000-4000-8000-000000000101",
+  "title": "Public-safe MASA projection",
+  "description": "A deliberately minimal public derivative with no private media, local paths, or unknown extensions.",
+  "actors": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000101",
+      "type": "masa:Actor",
+      "actorKind": "human",
+      "roles": [
+        "record-creator"
+      ],
+      "name": {
+        "state": "known",
+        "value": "MASA example author"
+      },
+      "disclosure": "private",
+      "extensions": {}
+    }
+  ],
+  "sources": [],
+  "representations": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000201",
+      "type": "masa:Representation",
+      "role": "preview",
+      "mediaType": "application/json",
+      "format": {
+        "state": "unknown",
+        "reason": "The example does not include source bytes.",
+        "reasonCode": "not_bundled"
+      },
+      "availability": "available",
+      "locator": {
+        "state": "known",
+        "value": "https://masa.sonicfield.org/examples/public-safe.json"
+      },
+      "integrity": {
+        "state": "known",
+        "value": {
+          "algorithm": "sha-256",
+          "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "byteLength": 0,
+          "status": "unverified"
+        }
+      },
+      "policyRefs": [
+        "urn:uuid:00000000-0000-4000-8000-000000000301"
+      ],
+      "disclosure": "public",
+      "extensions": {}
+    }
+  ],
+  "encounters": [],
+  "apertures": [],
+  "listeningPasses": [],
+  "claims": [],
+  "regions": [],
+  "measurements": [],
+  "observations": [],
+  "mappings": [],
+  "relations": [],
+  "policies": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000301",
+      "type": "masa:Policy",
+      "policyKind": "publication",
+      "issuer": "urn:uuid:00000000-0000-4000-8000-000000000101",
+      "status": "active",
+      "disclosure": "public",
+      "rules": [
+        {
+          "id": "urn:uuid:00000000-0000-4000-8000-000000000302",
+          "effect": "permission",
+          "actions": [
+            "read",
+            "publish"
+          ],
+          "targets": [
+            "urn:uuid:00000000-0000-4000-8000-000000000007"
+          ],
+          "subjects": [
+            "urn:uuid:00000000-0000-4000-8000-000000000101"
+          ],
+          "authorityBasis": {
+            "state": "known",
+            "value": "Fixture author approval for this exact public projection"
+          },
+          "constraints": {
+            "network": "prohibited"
+          },
+          "duties": [
+            "Preserve provenance and unknown states"
+          ]
+        }
+      ],
+      "review": {
+        "contact": {
+          "state": "unknown",
+          "reason": "No external contact exists for a local fixture.",
+          "reasonCode": "local_fixture"
+        },
+        "route": {
+          "state": "known",
+          "value": "Review the record with the local MASA CLI"
+        }
+      },
+      "extensions": {}
+    }
+  ],
+  "contexts": [],
+  "agentRuns": [],
+  "capabilities": [],
+  "integrity": {
+    "state": "unknown",
+    "reason": "The standalone example is an account rather than a bundled byte artifact.",
+    "reasonCode": "not_bundled"
+  },
+  "history": {
+    "mode": "embedded",
+    "events": [
+      {
+        "id": "urn:uuid:00000000-0000-4000-8000-000000000a01",
+        "type": "masa:OperationReceipt",
+        "recordId": "urn:uuid:00000000-0000-4000-8000-000000000007",
+        "sequence": 0,
+        "operationType": "matter.publish",
+        "effectClass": "publish",
+        "finalStatus": "completed",
+        "startedAt": "2026-07-27T12:01:00Z",
+        "endedAt": "2026-07-27T12:01:01Z",
+        "actors": [
+          "urn:uuid:00000000-0000-4000-8000-000000000101"
+        ],
+        "inputs": [],
+        "outputs": [
+          "urn:uuid:00000000-0000-4000-8000-000000000007"
+        ],
+        "tool": {
+          "state": "known",
+          "value": {
+            "id": "urn:uuid:00000000-0000-4000-8000-000000000a02",
+            "name": "Human-reviewed public fixture",
+            "version": {
+              "state": "known",
+              "value": "0.1.0"
+            },
+            "kind": "human-procedure"
+          }
+        },
+        "parameters": {
+          "projection": "allowlist",
+          "assetsIncluded": false
+        },
+        "policyEvaluation": {
+          "action": "publish",
+          "targets": [
+            "urn:uuid:00000000-0000-4000-8000-000000000007"
+          ],
+          "policyRefs": [
+            "urn:uuid:00000000-0000-4000-8000-000000000301"
+          ],
+          "result": "permitted",
+          "evaluatedAt": "2026-07-27T12:01:00Z",
+          "evaluator": "urn:uuid:00000000-0000-4000-8000-000000000101",
+          "authorityRefs": [
+            "urn:uuid:00000000-0000-4000-8000-000000000302"
+          ],
+          "reasons": [
+            "The active local fixture policy explicitly permits this bounded operation."
+          ]
+        },
+        "reversibility": "irreversible",
+        "determinism": {
+          "state": "deterministic"
+        },
+        "warnings": [],
+        "errors": [],
+        "claimRefs": [],
+        "extensions": {}
+      }
+    ]
+  },
+  "disclosure": "public",
+  "registers": [
+    "digital-technical"
+  ],
+  "scales": [
+    "object-event"
+  ],
+  "extensions": {},
+  "publication": {
+    "publicRecordId": "urn:uuid:00000000-0000-4000-8000-000000000007",
+    "approvedAt": "2026-07-27T12:10:00Z",
+    "approvedBy": "urn:uuid:00000000-0000-4000-8000-000000000101",
+    "policyEvaluation": {
+      "action": "publish",
+      "targets": [
+        "urn:uuid:00000000-0000-4000-8000-000000000007"
+      ],
+      "policyRefs": [
+        "urn:uuid:00000000-0000-4000-8000-000000000301"
+      ],
+      "result": "permitted",
+      "evaluatedAt": "2026-07-27T12:01:00Z",
+      "evaluator": "urn:uuid:00000000-0000-4000-8000-000000000101",
+      "authorityRefs": [
+        "urn:uuid:00000000-0000-4000-8000-000000000302"
+      ],
+      "reasons": [
+        "The active local fixture policy explicitly permits this bounded operation."
+      ]
+    },
+    "omissions": [
+      {
+        "pointer": "/extensions/example:roundtrip",
+        "category": "unknown-extension",
+        "reason": "Not approved for public export"
+      }
+    ],
+    "redactions": [],
+    "attribution": {
+      "state": "known",
+      "value": "MASA protocol example"
+    },
+    "license": {
+      "state": "known",
+      "value": "MIT for protocol fixture metadata; no media is included"
+    },
+    "retention": {
+      "state": "known",
+      "value": "Retain while protocol 0.1.0 remains supported"
+    },
+    "correctionUrl": "https://masa.sonicfield.org/corrections",
+    "revocationUrl": "https://masa.sonicfield.org/revocations",
+    "approvedExtensionNamespaces": []
+  }
+}

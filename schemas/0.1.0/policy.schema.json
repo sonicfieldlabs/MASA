@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/policy.schema.json",
+  "title": "MASA 0.1.0 Policy",
+  "$ref": "definitions.schema.json#/$defs/Policy"
+}

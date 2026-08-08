@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/profile-generation.schema.json",
+  "title": "MASA 0.1.0 Generation profile",
+  "allOf": [
+    { "$ref": "matter-record.schema.json" },
+    {
+      "properties": {
+        "profiles": { "contains": { "const": "generation" } }
+      },
+      "anyOf": [
+        {
+          "properties": {
+            "history": {
+              "type": "object",
+              "required": ["mode", "events"],
+              "properties": {
+                "mode": { "const": "embedded" },
+                "events": { "contains": { "$ref": "#/$defs/GenerationOperation" } }
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "history": {
+              "type": "object",
+              "required": ["mode", "eventIds"],
+              "properties": {
+                "mode": { "const": "external" },
+                "eventIds": { "minItems": 1 }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "$defs": {
+    "GenerationOperation": {
+      "allOf": [
+        { "$ref": "definitions.schema.json#/$defs/OperationReceipt" },
+        {
+          "properties": {
+            "operationType": { "enum": ["matter.generate", "matter.mutate", "matter.graft", "matter.continue", "matter.inpaint"] },
+            "effectClass": { "const": "generate" },
+            "parameters": { "$ref": "#/$defs/GenerationParameters" }
+          }
+        },
+        {
+          "if": { "properties": { "operationType": { "const": "matter.graft" } }, "required": ["operationType"] },
+          "then": { "properties": { "parameters": { "properties": { "parentRefs": { "minItems": 2 } } } } }
+        },
+        {
+          "if": { "properties": { "operationType": { "const": "matter.inpaint" } }, "required": ["operationType"] },
+          "then": { "properties": { "parameters": { "properties": { "regionRefs": { "minItems": 1 } } } } }
+        },
+        {
+          "if": { "properties": { "finalStatus": { "const": "completed" } }, "required": ["finalStatus"] },
+          "then": { "properties": { "outputs": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "GenerationParameters": {
+      "type": "object",
+      "required": [
+        "generationMethod",
+        "parentRefs",
+        "conditioningRefs",
+        "regionRefs",
+        "prompt",
+        "negativePrompt",
+        "model",
+        "adapter",
+        "provider",
+        "providerPolicyState",
+        "selection",
+        "rejectedOutputRefs"
+      ],
+      "properties": {
+        "generationMethod": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "parentRefs": { "type": "array", "items": { "$ref": "definitions.schema.json#/$defs/Id" }, "uniqueItems": true },
+        "conditioningRefs": { "type": "array", "items": { "$ref": "definitions.schema.json#/$defs/Id" }, "uniqueItems": true },
+        "regionRefs": { "type": "array", "items": { "$ref": "definitions.schema.json#/$defs/Id" }, "uniqueItems": true },
+        "prompt": { "$ref": "definitions.schema.json#/$defs/QualifiedValue" },
+        "negativePrompt": { "$ref": "definitions.schema.json#/$defs/QualifiedValue" },
+        "model": { "$ref": "definitions.schema.json#/$defs/QualifiedValue" },
+        "adapter": { "$ref": "definitions.schema.json#/$defs/QualifiedValue" },
+        "provider": { "$ref": "definitions.schema.json#/$defs/QualifiedValue" },
+        "providerPolicyState": { "$ref": "definitions.schema.json#/$defs/QualifiedValue" },
+        "selection": { "$ref": "definitions.schema.json#/$defs/QualifiedValue" },
+        "rejectedOutputRefs": { "type": "array", "items": { "$ref": "definitions.schema.json#/$defs/Id" }, "uniqueItems": true }
+      },
+      "additionalProperties": true
+    }
+  }
+}

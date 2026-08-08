@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/relation-registry.schema.json",
+  "title": "MASA 0.1.0 relation registry",
+  "type": "object",
+  "required": ["registryType", "registryVersion", "masaVersion", "namespace", "relations"],
+  "properties": {
+    "registryType": { "const": "masa-relation-registry" },
+    "registryVersion": { "const": "0.1.0" },
+    "masaVersion": { "const": "0.1.0" },
+    "namespace": { "type": "string", "format": "uri" },
+    "relations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/RegisteredRelation" },
+      "minItems": 1
+    }
+  },
+  "$defs": {
+    "RegisteredRelation": {
+      "type": "object",
+      "required": ["id", "category", "acyclic", "definition"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*:[a-z][a-z0-9_-]*$" },
+        "category": {
+          "type": "string",
+          "enum": ["derivation", "version", "structure", "provenance", "evidence", "listening", "composition", "generation", "operation", "mapping", "performance", "lineage", "spatial", "association", "responsibility", "policy", "epistemic"]
+        },
+        "acyclic": { "type": "boolean" },
+        "inverse": { "type": "string", "pattern": "^[a-z][a-z0-9-]*:[a-z][a-z0-9_-]*$" },
+        "symmetric": { "type": "boolean" },
+        "lineageDirection": {
+          "type": "string",
+          "enum": ["subject-is-descendant", "object-is-descendant"]
+        },
+        "definition": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "deprecated": { "type": "boolean", "default": false },
+        "deprecatedIn": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "replacedBy": { "type": "string", "pattern": "^[a-z][a-z0-9-]*:[a-z][a-z0-9_-]*$" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "deprecated": { "const": true } }, "required": ["deprecated"] },
+          "then": { "required": ["deprecatedIn"] }
+        }
+      ],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

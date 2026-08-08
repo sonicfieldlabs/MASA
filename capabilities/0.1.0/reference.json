@@ -1,0 +1,331 @@
+{
+  "capabilitySetType": "masa-capability-set",
+  "capabilitySetVersion": "0.1.0",
+  "masaVersion": "0.1.0",
+  "id": "https://masa.sonicfield.org/capabilities/0.1.0/reference",
+  "implementation": {
+    "id": "https://masa.sonicfield.org/implementations/typescript-reference/0.1.0",
+    "name": "MASA local TypeScript reference",
+    "version": "0.1.0"
+  },
+  "generatedAt": "2026-07-27T00:00:00Z",
+  "capabilities": [
+    {
+      "id": "https://masa.sonicfield.org/capabilities/0.1.0/matter.validate",
+      "type": "masa:Capability",
+      "name": "matter.validate",
+      "purpose": "Validate one local MASA record or bundle inside a configured root without remote dereferencing.",
+      "supportedMasaVersions": [
+        "0.1.0"
+      ],
+      "profiles": [
+        "core"
+      ],
+      "inputSchema": {
+        "state": "known",
+        "uri": "https://masa.sonicfield.org/schemas/0.1.0/tools/validate-input.schema.json"
+      },
+      "outputSchema": {
+        "state": "known",
+        "uri": "https://masa.sonicfield.org/schemas/0.1.0/tools/tool-result.schema.json"
+      },
+      "resources": {
+        "local": [
+          "configured-roots"
+        ],
+        "network": [],
+        "providers": [],
+        "hardware": []
+      },
+      "sideEffects": [
+        "local-read"
+      ],
+      "authority": {
+        "required": true,
+        "source": "trusted-host",
+        "scopes": [
+          "local-read"
+        ]
+      },
+      "confirmation": "host-policy",
+      "riskFlags": {
+        "expose": false,
+        "publish": false,
+        "delete": false,
+        "overwrite": false,
+        "paidProvider": false,
+        "externalSystem": false,
+        "preciseLocation": false
+      },
+      "receiptType": "masa:OperationReceipt",
+      "determinism": [
+        "deterministic"
+      ],
+      "outcomes": [
+        "completed",
+        "failed",
+        "refused",
+        "not_performed"
+      ],
+      "limits": {
+        "maxRecordBytes": 16777216,
+        "network": false
+      },
+      "extensions": {}
+    },
+    {
+      "id": "https://masa.sonicfield.org/capabilities/0.1.0/matter.inspect",
+      "type": "masa:Capability",
+      "name": "matter.inspect",
+      "purpose": "Return a bounded structural summary and diagnostics for one local MASA artifact.",
+      "supportedMasaVersions": [
+        "0.1.0"
+      ],
+      "profiles": [
+        "core"
+      ],
+      "inputSchema": {
+        "state": "known",
+        "uri": "https://masa.sonicfield.org/schemas/0.1.0/tools/inspect-input.schema.json"
+      },
+      "outputSchema": {
+        "state": "known",
+        "uri": "https://masa.sonicfield.org/schemas/0.1.0/tools/tool-result.schema.json"
+      },
+      "resources": {
+        "local": [
+          "configured-roots"
+        ],
+        "network": [],
+        "providers": [],
+        "hardware": []
+      },
+      "sideEffects": [
+        "local-read"
+      ],
+      "authority": {
+        "required": true,
+        "source": "trusted-host",
+        "scopes": [
+          "local-read"
+        ]
+      },
+      "confirmation": "host-policy",
+      "riskFlags": {
+        "expose": false,
+        "publish": false,
+        "delete": false,
+        "overwrite": false,
+        "paidProvider": false,
+        "externalSystem": false,
+        "preciseLocation": false
+      },
+      "receiptType": "masa:OperationReceipt",
+      "determinism": [
+        "deterministic"
+      ],
+      "outcomes": [
+        "completed",
+        "failed",
+        "refused",
+        "not_performed"
+      ],
+      "limits": {
+        "maxRecordBytes": 16777216,
+        "network": false
+      },
+      "extensions": {}
+    },
+    {
+      "id": "https://masa.sonicfield.org/capabilities/0.1.0/matter.trace_lineage",
+      "type": "masa:Capability",
+      "name": "matter.trace_lineage",
+      "purpose": "Return a bounded, direction-aware causal lineage subgraph for one entity in a validated local record.",
+      "supportedMasaVersions": [
+        "0.1.0"
+      ],
+      "profiles": [
+        "core"
+      ],
+      "inputSchema": {
+        "state": "known",
+        "uri": "https://masa.sonicfield.org/schemas/0.1.0/tools/trace-lineage-input.schema.json"
+      },
+      "outputSchema": {
+        "state": "known",
+        "uri": "https://masa.sonicfield.org/schemas/0.1.0/tools/tool-result.schema.json"
+      },
+      "resources": {
+        "local": [
+          "configured-roots"
+        ],
+        "network": [],
+        "providers": [],
+        "hardware": []
+      },
+      "sideEffects": [
+        "local-read"
+      ],
+      "authority": {
+        "required": true,
+        "source": "trusted-host",
+        "scopes": [
+          "local-read"
+        ]
+      },
+      "confirmation": "host-policy",
+      "riskFlags": {
+        "expose": false,
+        "publish": false,
+        "delete": false,
+        "overwrite": false,
+        "paidProvider": false,
+        "externalSystem": false,
+        "preciseLocation": false
+      },
+      "receiptType": "masa:OperationReceipt",
+      "determinism": [
+        "deterministic"
+      ],
+      "outcomes": [
+        "completed",
+        "failed",
+        "refused",
+        "not_performed"
+      ],
+      "limits": {
+        "maxRecordBytes": 16777216,
+        "network": false
+      },
+      "extensions": {}
+    },
+    {
+      "id": "https://masa.sonicfield.org/capabilities/0.1.0/matter.audit_public_export",
+      "type": "masa:Capability",
+      "name": "matter.audit_public_export",
+      "purpose": "Audit a proposed public projection for protocol, policy, path, secret, and disclosure failures.",
+      "supportedMasaVersions": [
+        "0.1.0"
+      ],
+      "profiles": [
+        "core"
+      ],
+      "inputSchema": {
+        "state": "known",
+        "uri": "https://masa.sonicfield.org/schemas/0.1.0/tools/audit-public-input.schema.json"
+      },
+      "outputSchema": {
+        "state": "known",
+        "uri": "https://masa.sonicfield.org/schemas/0.1.0/tools/tool-result.schema.json"
+      },
+      "resources": {
+        "local": [
+          "configured-roots"
+        ],
+        "network": [],
+        "providers": [],
+        "hardware": []
+      },
+      "sideEffects": [
+        "local-read"
+      ],
+      "authority": {
+        "required": true,
+        "source": "trusted-host",
+        "scopes": [
+          "local-read"
+        ]
+      },
+      "confirmation": "host-policy",
+      "riskFlags": {
+        "expose": false,
+        "publish": false,
+        "delete": false,
+        "overwrite": false,
+        "paidProvider": false,
+        "externalSystem": false,
+        "preciseLocation": false
+      },
+      "receiptType": "masa:OperationReceipt",
+      "determinism": [
+        "deterministic"
+      ],
+      "outcomes": [
+        "completed",
+        "failed",
+        "refused",
+        "not_performed"
+      ],
+      "limits": {
+        "maxRecordBytes": 16777216,
+        "network": false
+      },
+      "extensions": {}
+    },
+    {
+      "id": "https://masa.sonicfield.org/capabilities/0.1.0/matter.plan_processing",
+      "type": "masa:Capability",
+      "name": "matter.plan_processing",
+      "purpose": "Compose and validate one engine-neutral sound-matter processing request without performing any signal processing.",
+      "supportedMasaVersions": [
+        "0.1.0"
+      ],
+      "profiles": [
+        "core",
+        "processing"
+      ],
+      "inputSchema": {
+        "state": "known",
+        "uri": "https://masa.sonicfield.org/schemas/0.1.0/tools/plan-processing-input.schema.json"
+      },
+      "outputSchema": {
+        "state": "known",
+        "uri": "https://masa.sonicfield.org/schemas/0.1.0/tools/tool-result.schema.json"
+      },
+      "resources": {
+        "local": [
+          "configured-roots"
+        ],
+        "network": [],
+        "providers": [],
+        "hardware": []
+      },
+      "sideEffects": [
+        "local-read"
+      ],
+      "authority": {
+        "required": true,
+        "source": "trusted-host",
+        "scopes": [
+          "local-read"
+        ]
+      },
+      "confirmation": "host-policy",
+      "riskFlags": {
+        "expose": false,
+        "publish": false,
+        "delete": false,
+        "overwrite": false,
+        "paidProvider": false,
+        "externalSystem": false,
+        "preciseLocation": false
+      },
+      "receiptType": "masa:OperationReceipt",
+      "determinism": [
+        "nondeterministic"
+      ],
+      "outcomes": [
+        "completed",
+        "failed",
+        "refused",
+        "not_performed"
+      ],
+      "limits": {
+        "maxRecordBytes": 16777216,
+        "network": false
+      },
+      "extensions": {}
+    }
+  ],
+  "extensions": {}
+}

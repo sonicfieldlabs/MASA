@@ -1,0 +1,324 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/profile-processing.schema.json",
+  "title": "MASA 0.1.0 Processing profile",
+  "description": "Granular, spectral, and time-pitch processing operations contracted to external engines and accounted through receipts. MASA describes and verifies processing; it performs none.",
+  "allOf": [
+    { "$ref": "matter-record.schema.json" },
+    {
+      "properties": {
+        "profiles": { "contains": { "const": "processing" } }
+      },
+      "anyOf": [
+        {
+          "properties": {
+            "history": {
+              "type": "object",
+              "required": ["mode", "events"],
+              "properties": {
+                "mode": { "const": "embedded" },
+                "events": { "contains": { "$ref": "#/$defs/ProcessingOperation" } }
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "history": {
+              "type": "object",
+              "required": ["mode", "eventIds"],
+              "properties": {
+                "mode": { "const": "external" },
+                "eventIds": { "minItems": 1 }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "if": {
+        "properties": {
+          "history": {
+            "type": "object",
+            "required": ["mode", "events"],
+            "properties": {
+              "mode": { "const": "embedded" },
+              "events": { "contains": { "$ref": "#/$defs/CompletedProcessing" } }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "representations": { "minItems": 2 },
+          "relations": {
+            "contains": {
+              "allOf": [
+                { "$ref": "definitions.schema.json#/$defs/Relation" },
+                {
+                  "required": ["operationRef"],
+                  "properties": {
+                    "predicate": {
+                      "enum": [
+                        "masa:granulated-from",
+                        "masa:derived-from",
+                        "masa:derivation-of",
+                        "masa:segmented-from",
+                        "masa:isolated-from",
+                        "masa:variation-of",
+                        "masa:parent-of",
+                        "masa:child-of"
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "ProcessingOperation": {
+      "allOf": [
+        { "$ref": "definitions.schema.json#/$defs/OperationReceipt" },
+        {
+          "properties": {
+            "operationType": {
+              "enum": [
+                "matter.granulate",
+                "matter.extract",
+                "matter.reduce",
+                "matter.fragment",
+                "matter.timestretch",
+                "matter.pitchshift"
+              ]
+            },
+            "effectClass": { "enum": ["derive", "transform"] }
+          }
+        },
+        {
+          "if": { "properties": { "operationType": { "const": "matter.granulate" } }, "required": ["operationType"] },
+          "then": { "properties": { "parameters": { "$ref": "#/$defs/GranulationParameters" } } }
+        },
+        {
+          "if": { "properties": { "operationType": { "const": "matter.extract" } }, "required": ["operationType"] },
+          "then": { "properties": { "parameters": { "$ref": "#/$defs/ExtractionParameters" } } }
+        },
+        {
+          "if": { "properties": { "operationType": { "const": "matter.reduce" } }, "required": ["operationType"] },
+          "then": { "properties": { "parameters": { "$ref": "#/$defs/ReductionParameters" } } }
+        },
+        {
+          "if": { "properties": { "operationType": { "const": "matter.fragment" } }, "required": ["operationType"] },
+          "then": { "properties": { "parameters": { "$ref": "#/$defs/FragmentationParameters" } } }
+        },
+        {
+          "if": { "properties": { "operationType": { "const": "matter.timestretch" } }, "required": ["operationType"] },
+          "then": { "properties": { "parameters": { "$ref": "#/$defs/TimeStretchParameters" } } }
+        },
+        {
+          "if": { "properties": { "operationType": { "const": "matter.pitchshift" } }, "required": ["operationType"] },
+          "then": { "properties": { "parameters": { "$ref": "#/$defs/PitchShiftParameters" } } }
+        },
+        {
+          "if": { "properties": { "finalStatus": { "const": "completed" } }, "required": ["finalStatus"] },
+          "then": { "properties": { "outputs": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "CompletedProcessing": {
+      "allOf": [
+        { "$ref": "#/$defs/ProcessingOperation" },
+        {
+          "properties": {
+            "finalStatus": { "const": "completed" },
+            "outputs": { "minItems": 1 }
+          }
+        }
+      ]
+    },
+    "GranulationParameters": {
+      "type": "object",
+      "required": ["grain", "emission", "selection", "output"],
+      "properties": {
+        "grain": {
+          "type": "object",
+          "required": ["durationMs", "envelope"],
+          "properties": {
+            "durationMs": {
+              "type": "object",
+              "required": ["min", "max"],
+              "properties": {
+                "min": { "type": "number", "exclusiveMinimum": 0 },
+                "max": { "type": "number", "exclusiveMinimum": 0 }
+              },
+              "additionalProperties": false
+            },
+            "envelope": {
+              "type": "string",
+              "enum": ["gaussian", "expodec", "rexpodec", "triangular", "trapezoidal", "custom"]
+            },
+            "pitchScatterCents": { "type": "number", "minimum": 0 },
+            "amplitudeScatter": { "type": "number", "minimum": 0, "maximum": 1 },
+            "panScatter": { "type": "number", "minimum": 0, "maximum": 1 }
+          },
+          "additionalProperties": false
+        },
+        "emission": {
+          "type": "object",
+          "required": ["mode", "grainsPerSecond"],
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": ["synchronous", "quasi-synchronous", "asynchronous", "custom"]
+            },
+            "grainsPerSecond": { "type": "number", "exclusiveMinimum": 0 },
+            "totalGrains": { "type": "integer", "minimum": 1 }
+          },
+          "additionalProperties": false
+        },
+        "selection": {
+          "type": "object",
+          "required": ["order"],
+          "properties": {
+            "order": {
+              "type": "string",
+              "enum": ["linear", "random", "statistical", "authored", "custom"]
+            },
+            "regionRefs": {
+              "type": "array",
+              "items": { "$ref": "definitions.schema.json#/$defs/Id" },
+              "uniqueItems": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "output": {
+          "type": "object",
+          "required": ["kind"],
+          "properties": {
+            "kind": { "type": "string", "enum": ["texture", "fragment-set"] }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": true
+    },
+    "ExtractionParameters": {
+      "type": "object",
+      "required": ["domain"],
+      "properties": {
+        "domain": {
+          "type": "string",
+          "enum": ["spectral-band", "spectral-strata", "partials", "temporal-region", "custom"]
+        },
+        "bandHz": {
+          "type": "object",
+          "required": ["lowHz", "highHz"],
+          "properties": {
+            "lowHz": { "type": "number", "minimum": 0 },
+            "highHz": { "type": "number", "exclusiveMinimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        "strata": {
+          "type": "object",
+          "required": ["count"],
+          "properties": {
+            "count": { "type": "integer", "minimum": 1 },
+            "method": { "type": "string", "minLength": 1, "maxLength": 512 }
+          },
+          "additionalProperties": false
+        },
+        "partials": {
+          "type": "object",
+          "required": ["count", "criterion"],
+          "properties": {
+            "count": { "type": "integer", "minimum": 1 },
+            "criterion": { "type": "string", "enum": ["loudest", "lowest", "harmonic-template", "custom"] }
+          },
+          "additionalProperties": false
+        },
+        "regionRefs": {
+          "type": "array",
+          "items": { "$ref": "definitions.schema.json#/$defs/Id" },
+          "uniqueItems": true
+        },
+        "residual": { "type": "boolean" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "domain": { "const": "spectral-band" } }, "required": ["domain"] },
+          "then": { "required": ["bandHz"] }
+        },
+        {
+          "if": { "properties": { "domain": { "const": "spectral-strata" } }, "required": ["domain"] },
+          "then": { "required": ["strata"] }
+        },
+        {
+          "if": { "properties": { "domain": { "const": "partials" } }, "required": ["domain"] },
+          "then": { "required": ["partials"] }
+        },
+        {
+          "if": { "properties": { "domain": { "const": "temporal-region" } }, "required": ["domain"] },
+          "then": { "required": ["regionRefs"], "properties": { "regionRefs": { "minItems": 1 } } }
+        }
+      ],
+      "additionalProperties": true
+    },
+    "ReductionParameters": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["spectral-peaks", "envelope", "decimation", "mixdown", "denoise", "custom"]
+        },
+        "factor": { "type": "number", "exclusiveMinimum": 0 },
+        "keepPartials": { "type": "integer", "minimum": 1 },
+        "note": { "type": "string", "minLength": 1, "maxLength": 2048 }
+      },
+      "additionalProperties": true
+    },
+    "FragmentationParameters": {
+      "type": "object",
+      "required": ["strategy"],
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "enum": ["regions", "transients", "equal-duration", "grains", "custom"]
+        },
+        "regionRefs": {
+          "type": "array",
+          "items": { "$ref": "definitions.schema.json#/$defs/Id" },
+          "uniqueItems": true
+        },
+        "count": { "type": "integer", "minimum": 2 },
+        "fragmentDurationMs": { "type": "number", "exclusiveMinimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "TimeStretchParameters": {
+      "type": "object",
+      "required": ["factor"],
+      "properties": {
+        "factor": { "type": "number", "exclusiveMinimum": 0 },
+        "transientMode": { "type": "string", "enum": ["preserve", "smear", "custom"] },
+        "formantPreserved": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "PitchShiftParameters": {
+      "type": "object",
+      "required": ["cents"],
+      "properties": {
+        "cents": { "type": "number", "minimum": -14400, "maximum": 14400 },
+        "formantPreserved": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

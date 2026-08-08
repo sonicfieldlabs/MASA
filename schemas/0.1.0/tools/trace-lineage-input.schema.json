@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/tools/trace-lineage-input.schema.json",
+  "title": "matter.trace_lineage input",
+  "type": "object",
+  "required": ["path", "entityId"],
+  "properties": {
+    "path": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "entityId": { "$ref": "../definitions.schema.json#/$defs/Id" },
+    "direction": {
+      "type": "string",
+      "enum": ["ancestors", "descendants", "both"],
+      "default": "both"
+    },
+    "maxDepth": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 64,
+      "default": 16
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/profile-agent.schema.json",
+  "title": "MASA 0.1.0 Agent profile",
+  "allOf": [
+    { "$ref": "matter-record.schema.json" },
+    {
+      "properties": {
+        "profiles": { "contains": { "const": "agent" } },
+        "actors": {
+          "contains": {
+            "allOf": [
+              { "$ref": "definitions.schema.json#/$defs/Actor" },
+              { "properties": { "actorKind": { "const": "agent" } } }
+            ]
+          }
+        },
+        "agentRuns": { "minItems": 1 },
+        "capabilities": { "minItems": 1 }
+      }
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/manifest.schema.json",
+  "title": "MASA 0.1.0 bundle manifest",
+  "type": "object",
+  "required": [
+    "manifestType",
+    "manifestVersion",
+    "masaVersion",
+    "id",
+    "createdAt",
+    "createdBy",
+    "disclosure",
+    "profiles",
+    "records",
+    "files",
+    "externalReferences",
+    "omissions",
+    "extensions"
+  ],
+  "properties": {
+    "manifestType": { "const": "masa-bundle" },
+    "manifestVersion": { "const": "0.1.0" },
+    "masaVersion": { "const": "0.1.0" },
+    "id": { "$ref": "definitions.schema.json#/$defs/Id" },
+    "createdAt": { "$ref": "definitions.schema.json#/$defs/Timestamp" },
+    "createdBy": { "$ref": "definitions.schema.json#/$defs/Id" },
+    "disclosure": { "$ref": "definitions.schema.json#/$defs/Disclosure" },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["core", "audio", "listening", "analysis", "transformation", "generation", "processing", "mapping", "agent", "publication"]
+      },
+      "minItems": 1,
+      "uniqueItems": true,
+      "contains": { "const": "core" }
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "path"],
+        "properties": {
+          "id": { "$ref": "definitions.schema.json#/$defs/Id" },
+          "path": { "$ref": "#/$defs/RelativePath" }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "files": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/FileEntry" }
+    },
+    "externalReferences": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ExternalReference" }
+    },
+    "omissions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["category", "reason"],
+        "properties": {
+          "category": { "type": "string", "minLength": 1, "maxLength": 256 },
+          "reason": { "type": "string", "minLength": 1, "maxLength": 2048 },
+          "ref": { "$ref": "definitions.schema.json#/$defs/Id" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "extensions": { "$ref": "definitions.schema.json#/$defs/ExtensionBag" }
+  },
+  "$defs": {
+    "RelativePath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*//)(?!.*\\/$)(?!.*(?:^|/)\\.\\.?(?:/|$))[^\\u0000-\\u001F\\u007F]+$"
+    },
+    "FileEntry": {
+      "type": "object",
+      "required": ["path", "role", "mediaType", "byteLength", "sha256", "disclosure"],
+      "properties": {
+        "path": { "$ref": "#/$defs/RelativePath" },
+        "role": {
+          "type": "string",
+          "enum": ["record", "event-log", "policy", "original", "derivative", "preview", "report", "other"]
+        },
+        "mediaType": { "type": "string", "pattern": "^[A-Za-z0-9!#$&^_.+-]+/[A-Za-z0-9!#$&^_.+-]+$" },
+        "byteLength": { "type": "integer", "minimum": 0 },
+        "sha256": { "type": "string", "pattern": "^[A-Fa-f0-9]{64}$" },
+        "disclosure": { "$ref": "definitions.schema.json#/$defs/Disclosure" },
+        "recordRef": { "$ref": "definitions.schema.json#/$defs/Id" }
+      },
+      "additionalProperties": false
+    },
+    "ExternalReference": {
+      "type": "object",
+      "required": ["id", "role", "availability", "locator", "policyRefs", "disclosure"],
+      "properties": {
+        "id": { "$ref": "definitions.schema.json#/$defs/Id" },
+        "role": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "availability": { "type": "string", "enum": ["external", "withheld", "unavailable", "deleted"] },
+        "locator": { "$ref": "definitions.schema.json#/$defs/QualifiedValue" },
+        "policyRefs": {
+          "type": "array",
+          "items": { "$ref": "definitions.schema.json#/$defs/Id" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "disclosure": { "$ref": "definitions.schema.json#/$defs/Disclosure" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

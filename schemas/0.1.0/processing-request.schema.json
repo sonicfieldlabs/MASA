@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/processing-request.schema.json",
+  "title": "MASA 0.1.0 processing request",
+  "description": "A validated, engine-neutral request for one sound-matter processing operation. An external engine adapter consumes the request, performs the signal processing under host authority, and returns descendants plus an OperationReceipt; MASA validates the result. A request grants no permission by itself.",
+  "type": "object",
+  "required": [
+    "requestType",
+    "requestVersion",
+    "masaVersion",
+    "id",
+    "createdAt",
+    "operationType",
+    "inputs",
+    "parameters",
+    "determinism",
+    "policyRefs",
+    "outputContract",
+    "extensions"
+  ],
+  "properties": {
+    "requestType": { "const": "masa-processing-request" },
+    "requestVersion": { "const": "0.1.0" },
+    "masaVersion": { "const": "0.1.0" },
+    "id": { "$ref": "definitions.schema.json#/$defs/Id" },
+    "createdAt": { "$ref": "definitions.schema.json#/$defs/Timestamp" },
+    "requestedBy": { "$ref": "definitions.schema.json#/$defs/Id" },
+    "recordRef": { "$ref": "definitions.schema.json#/$defs/Id" },
+    "operationType": {
+      "type": "string",
+      "enum": [
+        "matter.granulate",
+        "matter.extract",
+        "matter.reduce",
+        "matter.fragment",
+        "matter.timestretch",
+        "matter.pitchshift"
+      ]
+    },
+    "inputs": {
+      "type": "array",
+      "items": { "$ref": "definitions.schema.json#/$defs/Id" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "parameters": { "type": "object" },
+    "determinism": {
+      "type": "string",
+      "enum": ["require-deterministic", "require-seeded", "accept-nondeterministic"]
+    },
+    "engine": { "$ref": "definitions.schema.json#/$defs/QualifiedValue" },
+    "policyRefs": {
+      "type": "array",
+      "items": { "$ref": "definitions.schema.json#/$defs/Id" },
+      "uniqueItems": true
+    },
+    "outputContract": {
+      "type": "object",
+      "required": ["roles", "maxOutputs"],
+      "properties": {
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["derivative", "render", "preview", "data", "other"]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "maxOutputs": { "type": "integer", "minimum": 1 },
+        "mediaTypes": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[A-Za-z0-9!#$&^_.+-]+/[A-Za-z0-9!#$&^_.+-]+$" },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "extensions": { "$ref": "definitions.schema.json#/$defs/ExtensionBag" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "operationType": { "const": "matter.granulate" } }, "required": ["operationType"] },
+      "then": { "properties": { "parameters": { "$ref": "profile-processing.schema.json#/$defs/GranulationParameters" } } }
+    },
+    {
+      "if": { "properties": { "operationType": { "const": "matter.extract" } }, "required": ["operationType"] },
+      "then": { "properties": { "parameters": { "$ref": "profile-processing.schema.json#/$defs/ExtractionParameters" } } }
+    },
+    {
+      "if": { "properties": { "operationType": { "const": "matter.reduce" } }, "required": ["operationType"] },
+      "then": { "properties": { "parameters": { "$ref": "profile-processing.schema.json#/$defs/ReductionParameters" } } }
+    },
+    {
+      "if": { "properties": { "operationType": { "const": "matter.fragment" } }, "required": ["operationType"] },
+      "then": { "properties": { "parameters": { "$ref": "profile-processing.schema.json#/$defs/FragmentationParameters" } } }
+    },
+    {
+      "if": { "properties": { "operationType": { "const": "matter.timestretch" } }, "required": ["operationType"] },
+      "then": { "properties": { "parameters": { "$ref": "profile-processing.schema.json#/$defs/TimeStretchParameters" } } }
+    },
+    {
+      "if": { "properties": { "operationType": { "const": "matter.pitchshift" } }, "required": ["operationType"] },
+      "then": { "properties": { "parameters": { "$ref": "profile-processing.schema.json#/$defs/PitchShiftParameters" } } }
+    }
+  ],
+  "additionalProperties": false
+}

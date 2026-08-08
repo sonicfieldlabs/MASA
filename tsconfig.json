@@ -1,0 +1,11 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/core" },
+    { "path": "./packages/validator" },
+    { "path": "./packages/bundle" },
+    { "path": "./cli" },
+    { "path": "./mcp" }
+  ]
+}
+

@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/term-registry.schema.json",
+  "title": "MASA 0.1.0 term registry",
+  "type": "object",
+  "required": ["registryType", "registryVersion", "masaVersion", "namespace", "terms"],
+  "properties": {
+    "registryType": { "const": "masa-term-registry" },
+    "registryVersion": { "const": "0.1.0" },
+    "masaVersion": { "const": "0.1.0" },
+    "namespace": { "type": "string", "format": "uri" },
+    "terms": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Term" },
+      "minItems": 1
+    }
+  },
+  "$defs": {
+    "Term": {
+      "type": "object",
+      "required": [
+        "id",
+        "label",
+        "termStatus",
+        "provenanceClass",
+        "definition",
+        "introduced",
+        "references",
+        "nonEquivalentTo"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*:[A-Za-z][A-Za-z0-9._-]*$" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "termStatus": { "type": "string", "enum": ["source-term", "adapted-term", "project-term", "working-term"] },
+        "provenanceClass": { "type": "string", "enum": ["external-source", "project-corpus", "curator-directive", "mixed"] },
+        "definition": { "type": "string", "minLength": 1, "maxLength": 8192 },
+        "introduced": { "const": "0.1.0" },
+        "attributedTo": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 512 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^src-[a-z0-9-]+$" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "decisionRefs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 2048 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "references": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 2048 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "nonEquivalentTo": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 512 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "deprecated": { "type": "boolean", "default": false },
+        "deprecatedIn": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "replacedBy": { "type": "string", "pattern": "^[a-z][a-z0-9-]*:[A-Za-z][A-Za-z0-9._-]*$" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "termStatus": { "const": "source-term" } }, "required": ["termStatus"] },
+          "then": { "required": ["attributedTo", "sourceIds"] }
+        },
+        {
+          "if": { "properties": { "deprecated": { "const": true } }, "required": ["deprecated"] },
+          "then": { "required": ["deprecatedIn"] }
+        }
+      ],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

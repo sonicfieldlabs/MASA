@@ -1,0 +1,47 @@
+{
+  "manifestType": "masa-bundle",
+  "manifestVersion": "0.1.0",
+  "masaVersion": "0.1.0",
+  "id": "urn:uuid:00000000-0000-4000-8000-000000000b01",
+  "createdAt": "2026-07-27T12:11:00Z",
+  "createdBy": "urn:uuid:00000000-0000-4000-8000-000000000101",
+  "disclosure": "private",
+  "profiles": [
+    "core",
+    "audio",
+    "transformation"
+  ],
+  "records": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000003",
+      "path": "records/transformation.masa.json"
+    }
+  ],
+  "files": [
+    {
+      "path": "events.ndjson",
+      "role": "event-log",
+      "mediaType": "application/x-ndjson",
+      "byteLength": 1482,
+      "sha256": "a83cb23722f25be0723a45f317e59b478d245e5e3da5f912c69e35d80842eb96",
+      "disclosure": "private"
+    },
+    {
+      "path": "records/transformation.masa.json",
+      "role": "record",
+      "mediaType": "application/vnd.sonicfield.masa.record+json",
+      "byteLength": 6971,
+      "sha256": "9879cda8536e44a214589f470a52f07c7cf316fc5a5d95723f34594d0f46c16e",
+      "disclosure": "private",
+      "recordRef": "urn:uuid:00000000-0000-4000-8000-000000000003"
+    }
+  ],
+  "externalReferences": [],
+  "omissions": [
+    {
+      "category": "media",
+      "reason": "No audio bytes are required for this structural lineage fixture."
+    }
+  ],
+  "extensions": {}
+}

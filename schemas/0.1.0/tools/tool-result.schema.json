@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/tools/tool-result.schema.json",
+  "title": "MASA local tool result",
+  "type": "object",
+  "required": ["status", "valid", "diagnostics"],
+  "properties": {
+    "status": { "type": "string", "enum": ["completed", "failed", "refused"] },
+    "valid": { "type": "boolean" },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "severity", "instancePath", "schemaPath", "message", "remediation"],
+        "properties": {
+          "code": { "type": "string", "pattern": "^MASA_[A-Z0-9_]+$" },
+          "severity": { "type": "string", "enum": ["error", "warning", "info"] },
+          "instancePath": { "type": "string" },
+          "schemaPath": { "type": "string" },
+          "message": { "type": "string", "minLength": 1, "maxLength": 2048 },
+          "remediation": { "type": "string", "minLength": 1, "maxLength": 2048 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "data": { "$ref": "../definitions.schema.json#/$defs/JsonValue" }
+  },
+  "additionalProperties": false
+}
+

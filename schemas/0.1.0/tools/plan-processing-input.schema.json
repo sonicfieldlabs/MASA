@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://masa.sonicfield.org/schemas/0.1.0/tools/plan-processing-input.schema.json",
+  "title": "matter.plan_processing input",
+  "description": "Compose and validate one processing request without performing any signal processing. When a record path is supplied, input references are resolved against it.",
+  "type": "object",
+  "required": ["operationType", "parameters", "inputs"],
+  "properties": {
+    "operationType": {
+      "type": "string",
+      "enum": [
+        "matter.granulate",
+        "matter.extract",
+        "matter.reduce",
+        "matter.fragment",
+        "matter.timestretch",
+        "matter.pitchshift"
+      ]
+    },
+    "parameters": { "type": "object" },
+    "inputs": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 5, "maxLength": 2048 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "path": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "determinism": {
+      "type": "string",
+      "enum": ["require-deterministic", "require-seeded", "accept-nondeterministic"]
+    },
+    "maxOutputs": { "type": "integer", "minimum": 1, "maximum": 10000 }
+  },
+  "additionalProperties": false
+}

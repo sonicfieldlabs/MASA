@@ -1,0 +1,324 @@
+{
+  "$schema": "https://masa.sonicfield.org/schemas/0.1.0/matter-record.schema.json",
+  "masaVersion": "0.1.0",
+  "id": "urn:uuid:00000000-0000-4000-8000-000000000006",
+  "type": "masa:MatterRecord",
+  "revision": 1,
+  "profiles": [
+    "core",
+    "agent"
+  ],
+  "createdAt": "2026-07-27T12:00:00Z",
+  "createdBy": "urn:uuid:00000000-0000-4000-8000-000000000101",
+  "title": "Bounded local agent inspection",
+  "description": "A representation is registered without claiming that it is identical to a physical event or perceptual object.",
+  "actors": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000101",
+      "type": "masa:Actor",
+      "actorKind": "human",
+      "roles": [
+        "record-creator"
+      ],
+      "name": {
+        "state": "known",
+        "value": "Local example author"
+      },
+      "disclosure": "private",
+      "extensions": {}
+    },
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000901",
+      "type": "masa:Actor",
+      "actorKind": "agent",
+      "roles": [
+        "validator"
+      ],
+      "name": {
+        "state": "known",
+        "value": "Local MASA fixture agent"
+      },
+      "authorityRefs": [
+        "urn:uuid:00000000-0000-4000-8000-000000000302"
+      ],
+      "disclosure": "private",
+      "extensions": {}
+    }
+  ],
+  "sources": [],
+  "representations": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000201",
+      "type": "masa:Representation",
+      "role": "source-representation",
+      "mediaType": "application/octet-stream",
+      "format": {
+        "state": "unknown",
+        "reason": "The example does not include source bytes.",
+        "reasonCode": "not_bundled"
+      },
+      "availability": "unavailable",
+      "locator": {
+        "state": "unavailable",
+        "reason": "No asset is bundled with this minimal example.",
+        "reasonCode": "not_bundled"
+      },
+      "integrity": {
+        "state": "unknown",
+        "reason": "Integrity cannot be verified without bytes.",
+        "reasonCode": "not_bundled"
+      },
+      "policyRefs": [
+        "urn:uuid:00000000-0000-4000-8000-000000000301"
+      ],
+      "disclosure": "private",
+      "extensions": {}
+    }
+  ],
+  "encounters": [],
+  "apertures": [],
+  "listeningPasses": [],
+  "claims": [],
+  "regions": [],
+  "measurements": [],
+  "observations": [],
+  "mappings": [],
+  "relations": [],
+  "policies": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000301",
+      "type": "masa:Policy",
+      "policyKind": "composite",
+      "issuer": "urn:uuid:00000000-0000-4000-8000-000000000101",
+      "status": "active",
+      "disclosure": "private",
+      "rules": [
+        {
+          "id": "urn:uuid:00000000-0000-4000-8000-000000000302",
+          "effect": "permission",
+          "actions": [
+            "read",
+            "validate"
+          ],
+          "targets": [
+            "urn:uuid:00000000-0000-4000-8000-000000000006"
+          ],
+          "subjects": [
+            "urn:uuid:00000000-0000-4000-8000-000000000101",
+            "urn:uuid:00000000-0000-4000-8000-000000000901"
+          ],
+          "authorityBasis": {
+            "state": "known",
+            "value": "Local creator declaration for this private example"
+          },
+          "constraints": {
+            "network": "prohibited"
+          },
+          "duties": [
+            "Preserve provenance and unknown states"
+          ]
+        }
+      ],
+      "review": {
+        "contact": {
+          "state": "unknown",
+          "reason": "No external contact exists for a local fixture.",
+          "reasonCode": "local_fixture"
+        },
+        "route": {
+          "state": "known",
+          "value": "Review the record with the local MASA CLI"
+        }
+      },
+      "extensions": {}
+    }
+  ],
+  "contexts": [],
+  "agentRuns": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000902",
+      "type": "masa:AgentRun",
+      "actorRef": "urn:uuid:00000000-0000-4000-8000-000000000901",
+      "plan": [
+        "Validate the local record",
+        "Stop without modifying it"
+      ],
+      "capabilityRefs": [
+        "urn:uuid:00000000-0000-4000-8000-000000000905"
+      ],
+      "memoryRefs": [],
+      "authorityRefs": [
+        "urn:uuid:00000000-0000-4000-8000-000000000302"
+      ],
+      "budget": {
+        "maxOperations": 1,
+        "network": false
+      },
+      "stopConditions": [
+        "Stop after validation",
+        "Refuse any requested external action"
+      ],
+      "operationRefs": [
+        "urn:uuid:00000000-0000-4000-8000-000000000903"
+      ],
+      "review": {
+        "state": "known",
+        "value": "Fixture reviewed by its local author"
+      },
+      "outcome": "completed",
+      "extensions": {}
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "urn:uuid:00000000-0000-4000-8000-000000000905",
+      "type": "masa:Capability",
+      "name": "matter.validate",
+      "purpose": "Validate one record inside a host-configured local root without writing or using the network.",
+      "supportedMasaVersions": [
+        "0.1.0"
+      ],
+      "profiles": [
+        "core",
+        "agent"
+      ],
+      "inputSchema": {
+        "state": "known",
+        "uri": "https://masa.sonicfield.org/schemas/0.1.0/matter-record.schema.json"
+      },
+      "outputSchema": {
+        "state": "known",
+        "uri": "https://masa.sonicfield.org/schemas/0.1.0/conformance-result.schema.json"
+      },
+      "resources": {
+        "local": [
+          "configured-roots"
+        ],
+        "network": [],
+        "providers": [],
+        "hardware": []
+      },
+      "sideEffects": [
+        "local-read"
+      ],
+      "authority": {
+        "required": true,
+        "source": "trusted-host",
+        "scopes": [
+          "local-read"
+        ]
+      },
+      "confirmation": "host-policy",
+      "riskFlags": {
+        "expose": false,
+        "publish": false,
+        "delete": false,
+        "overwrite": false,
+        "paidProvider": false,
+        "externalSystem": false,
+        "preciseLocation": false
+      },
+      "receiptType": "masa:OperationReceipt",
+      "determinism": [
+        "deterministic"
+      ],
+      "outcomes": [
+        "completed",
+        "failed",
+        "refused",
+        "not_performed"
+      ],
+      "limits": {
+        "maxRecordBytes": 16777216
+      },
+      "extensions": {}
+    }
+  ],
+  "integrity": {
+    "state": "unknown",
+    "reason": "The standalone example is an account rather than a bundled byte artifact.",
+    "reasonCode": "not_bundled"
+  },
+  "history": {
+    "mode": "embedded",
+    "events": [
+      {
+        "id": "urn:uuid:00000000-0000-4000-8000-000000000903",
+        "type": "masa:OperationReceipt",
+        "recordId": "urn:uuid:00000000-0000-4000-8000-000000000006",
+        "sequence": 0,
+        "operationType": "matter.validate",
+        "effectClass": "read",
+        "finalStatus": "completed",
+        "startedAt": "2026-07-27T12:01:00Z",
+        "endedAt": "2026-07-27T12:01:01Z",
+        "actors": [
+          "urn:uuid:00000000-0000-4000-8000-000000000901"
+        ],
+        "inputs": [
+          "urn:uuid:00000000-0000-4000-8000-000000000006"
+        ],
+        "outputs": [],
+        "tool": {
+          "state": "known",
+          "value": {
+            "id": "urn:uuid:00000000-0000-4000-8000-000000000904",
+            "name": "MASA local validator",
+            "version": {
+              "state": "known",
+              "value": "0.1.0"
+            },
+            "kind": "software"
+          }
+        },
+        "parameters": {
+          "network": false,
+          "write": false
+        },
+        "policyEvaluation": {
+          "action": "validate",
+          "targets": [
+            "urn:uuid:00000000-0000-4000-8000-000000000006"
+          ],
+          "policyRefs": [
+            "urn:uuid:00000000-0000-4000-8000-000000000301"
+          ],
+          "result": "permitted",
+          "evaluatedAt": "2026-07-27T12:01:00Z",
+          "evaluator": "urn:uuid:00000000-0000-4000-8000-000000000101",
+          "authorityRefs": [
+            "urn:uuid:00000000-0000-4000-8000-000000000302"
+          ],
+          "reasons": [
+            "The active local fixture policy explicitly permits this bounded operation."
+          ]
+        },
+        "reversibility": "reversible",
+        "determinism": {
+          "state": "deterministic"
+        },
+        "warnings": [],
+        "errors": [],
+        "claimRefs": [],
+        "extensions": {}
+      }
+    ]
+  },
+  "disclosure": "private",
+  "registers": [
+    "digital-technical"
+  ],
+  "scales": [
+    "object-event"
+  ],
+  "extensions": {
+    "example:roundtrip": {
+      "deep": {
+        "values": [
+          "preserve",
+          "without-interpretation"
+        ]
+      }
+    }
+  }
+}
