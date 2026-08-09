@@ -1,6 +1,17 @@
 # Changelog
 
-All material protocol changes are recorded here. MASA uses semantic versioning for normative schemas and behavior.
+All material protocol and reference-tooling changes are recorded here. MASA uses semantic versioning; a tooling patch may advance without changing the normative protocol version when its record contracts remain compatible.
+
+## 0.1.1 - 2026-08-09
+
+Patch release of the TypeScript reference implementation. The normative MASA protocol, schemas, capability-set format, profile directories, and record/request version fields remain `0.1.0`.
+
+- Enforced every declared profile during public audits and recursively removed approved-extension secrets, credential-bearing URL parameters, absolute private paths, and nested precise coordinates.
+- Expanded conservative offline non-public address detection across private, documentation, benchmarking, selected reserved IPv4/IPv6 space, and common transition forms; DNS resolution remains an explicitly documented connection-time policy boundary.
+- Refused processing plans against invalid target records and removed duplicate MCP validation work.
+- Made ZIP packing and promotion portable across Windows path and directory semantics, bounded temporary names independently of caller filenames, and added a Windows release-gate lane.
+- Separated normative protocol identity from generated reference-implementation identity across the CLI, MCP server, capabilities, resources, and conformance evidence.
+- Added deterministic capability metadata, synchronized release-version generation, pinned read-only CI, dependency maintenance, and a gate that validates the exact checked-in evidence set against the current specification, fixtures, runner, and release identity.
 
 ## 0.1.0 - 2026-08-07
 

@@ -1,6 +1,10 @@
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import {
+  MASA_PROTOCOL_VERSION,
+  MASA_REFERENCE_IMPLEMENTATION_VERSION,
+} from "@sonicfield/masa";
 import { afterEach, describe, expect, it } from "vitest";
 import { runCli, type CliIo } from "./index.js";
 
@@ -26,7 +30,9 @@ describe("MASA CLI", () => {
   it("prints help without side effects", async () => {
     const result = capture();
     await expect(runCli(["help"], result.io)).resolves.toBe(0);
-    expect(result.out.join("\n")).toContain("MASA 0.1.0 local CLI");
+    expect(result.out.join("\n")).toContain(
+      `MASA local CLI ${MASA_REFERENCE_IMPLEMENTATION_VERSION} (protocol ${MASA_PROTOCOL_VERSION})`,
+    );
     expect(result.error).toEqual([]);
   });
 
@@ -44,6 +50,20 @@ describe("MASA CLI", () => {
     const result = capture();
     await expect(runCli(["conformance", "reader", recordPath, "--json"], result.io)).resolves.toBe(1);
     expect(result.out.join("\n")).toContain("MASA_SCHEMA_INVALID");
+    expect(result.error).toEqual([]);
+  });
+
+  it("applies the public-safety audit to publisher conformance", async () => {
+    const recordPath = join(
+      import.meta.dirname,
+      "../../examples/0.1.0/invalid/public-local-path.masa.json",
+    );
+    const result = capture();
+
+    await expect(
+      runCli(["conformance", "publisher", recordPath, "--json"], result.io),
+    ).resolves.toBe(1);
+    expect(result.out.join("\n")).toContain("MASA_PUBLIC_PATH");
     expect(result.error).toEqual([]);
   });
 

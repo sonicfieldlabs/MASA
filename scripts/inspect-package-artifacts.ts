@@ -3,6 +3,8 @@ import { readFile } from "node:fs/promises";
 import { promisify } from "node:util";
 import { join, resolve } from "node:path";
 
+import { MASA_PROTOCOL_VERSION } from "./canonical.js";
+
 const execute = promisify(execFile);
 const root = resolve(import.meta.dirname, "..");
 const expectedLicense = (await readFile(join(root, "LICENSE"), "utf8")).trimEnd();
@@ -28,7 +30,9 @@ for (const packagePath of packages) {
     private?: unknown;
     name?: unknown;
   };
-  if (packageJson.private !== true) throw new Error(`${packagePath} must remain private in MASA 0.1.0.`);
+  if (packageJson.private !== true) {
+    throw new Error(`${packagePath} must remain private for MASA ${MASA_PROTOCOL_VERSION}.`);
+  }
   const { stdout } = await execute("pnpm", ["pack", "--dry-run", "--json"], {
     cwd: directory,
     maxBuffer: 16 * 1024 * 1024

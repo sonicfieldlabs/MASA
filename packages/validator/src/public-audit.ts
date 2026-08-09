@@ -1,9 +1,13 @@
 import type { Diagnostic, MatterRecord } from "@sonicfield/masa";
 import {
   asJsonArray,
+  escapeJsonPointerSegment,
   indexRecord,
+  isCredentialParameterKey,
   isJsonObject,
-  isPrivateHostname,
+  isNonPublicHostname,
+  isSecretConfigurationKey,
+  isUnsafeFilesystemLocator,
   readString,
   readStringArray,
   sortDiagnostics,
@@ -12,11 +16,18 @@ import {
 
 import { diagnostic } from "./diagnostic.js";
 
-const SECRET_KEY = /^(?:access[_-]?token|api[_-]?key|api[_-]?secret|authorization|client[_-]?secret|cookie|credentials?|environment|password|private[_-]?endpoint|provider[_-]?(?:config|settings)|secret|token)$/i;
 const SECRET_VALUE = /(?:\bAKIA[A-Z0-9]{16}\b|\bAIza[A-Za-z0-9_-]{20,}\b|\bgh[pousr]_[A-Za-z0-9]{20,}\b|\bsk-[A-Za-z0-9_-]{16,}\b|\bsk_(?:live|test)_[A-Za-z0-9]{10,}\b|\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\b)/;
-const ABSOLUTE_PATH = /^(?:~\/|\/(?:Applications|Users|Volumes|data|etc|home|media|mnt|opt|private|root|run|srv|tmp|usr|var)(?:\/|$)|[A-Za-z]:[\\/]|\\\\)/;
 const LOCATION_KEY = /^(?:lat|latitude|lon|lng|longitude)$/i;
+const COORDINATES_KEY = /^coordinates$/i;
 const COORDINATE_STRING = /^[-+]?\d{1,3}(?:\.\d+)?$/;
+const MATTER_RECORD_POINTER_ROOTS = new Set([
+  "$schema", "@context", "masaVersion", "id", "type", "revision", "supersedes",
+  "profiles", "createdAt", "createdBy", "title", "description", "disclosure",
+  "registers", "scales", "actors", "sources", "representations", "encounters",
+  "apertures", "listeningPasses", "claims", "measurements", "regions",
+  "observations", "mappings", "relations", "policies", "contexts", "agentRuns",
+  "capabilities", "publication", "integrity", "history", "extensions",
+]);
 
 export function auditPublicSafety(record: MatterRecord): Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
@@ -64,7 +75,7 @@ export function auditPublicSafety(record: MatterRecord): Diagnostic[] {
   }
 
   walkJson(raw, ({ value, instancePath, parent, key }) => {
-    if (typeof key === "string" && SECRET_KEY.test(key)) {
+    if (typeof key === "string" && isSecretConfigurationKey(key)) {
       diagnostics.push(
         diagnostic(
           "MASA_PUBLIC_SECRET",
@@ -90,7 +101,7 @@ export function auditPublicSafety(record: MatterRecord): Diagnostic[] {
       );
     }
 
-    if (key === "coordinates" && Array.isArray(value) && value.some((item) => typeof item === "number")) {
+    if (typeof key === "string" && COORDINATES_KEY.test(key) && containsNumericCoordinate(value)) {
       diagnostics.push(
         diagnostic(
           "MASA_PUBLIC_PRECISE_LOCATION",
@@ -109,7 +120,7 @@ export function auditPublicSafety(record: MatterRecord): Diagnostic[] {
           diagnostics.push(
             diagnostic(
               "MASA_PUBLIC_EXTENSION",
-              `${instancePath}/${extensionKey}`,
+              `${instancePath}/${escapeJsonPointerSegment(extensionKey)}`,
               "A public projection contains an extension namespace that was not approved",
               "Remove the extension or record exact namespace approval in the Publication object",
             ),
@@ -303,7 +314,9 @@ function auditPublication(
 }
 
 function auditPublicString(value: string, instancePath: string, diagnostics: Diagnostic[]): void {
-  if (ABSOLUTE_PATH.test(value) || value.startsWith("file:")) {
+  const validNoticePointer =
+    isPublicationNoticePointer(instancePath) && isMatterRecordJsonPointer(value);
+  if (!validNoticePointer && isUnsafeFilesystemLocator(value)) {
     diagnostics.push(
       diagnostic(
         "MASA_PUBLIC_PATH",
@@ -326,7 +339,7 @@ function auditPublicString(value: string, instancePath: string, diagnostics: Dia
 
   let url: URL;
   try {
-    url = new URL(value);
+    url = new URL(value.trim());
   } catch {
     return;
   }
@@ -340,7 +353,7 @@ function auditPublicString(value: string, instancePath: string, diagnostics: Dia
       ),
     );
   }
-  if ([...url.searchParams.keys()].some((key) => /key|password|secret|signature|token/i.test(key))) {
+  if (hasCredentialParameter(url)) {
     diagnostics.push(
       diagnostic(
         "MASA_PUBLIC_SECRET",
@@ -350,14 +363,48 @@ function auditPublicString(value: string, instancePath: string, diagnostics: Dia
       ),
     );
   }
-  if (isPrivateHostname(url.hostname)) {
+  if (url.hostname !== "" && isNonPublicHostname(url.hostname)) {
     diagnostics.push(
       diagnostic(
         "MASA_PUBLIC_PRIVATE_ENDPOINT",
         instancePath,
-        "A public projection contains a loopback or private-network endpoint",
-        "Remove the endpoint or replace it with an intentionally public service locator",
+        "A public projection contains a loopback, private, reserved, or otherwise non-public endpoint",
+        "Remove the endpoint or replace it with an intentionally public service locator, then enforce DNS and network policy at connection time",
       ),
     );
   }
+}
+
+function containsNumericCoordinate(value: unknown): boolean {
+  if (!Array.isArray(value)) return false;
+  const pending: unknown[] = [...value];
+  while (pending.length > 0) {
+    const candidate = pending.pop();
+    if (typeof candidate === "number" && Number.isFinite(candidate)) return true;
+    if (Array.isArray(candidate)) {
+      for (const item of candidate) pending.push(item);
+    }
+  }
+  return false;
+}
+
+function hasCredentialParameter(url: URL): boolean {
+  const parameterNames = [...url.searchParams.keys()];
+  if (url.hash.length > 1) {
+    parameterNames.push(...new URLSearchParams(url.hash.slice(1)).keys());
+  }
+  return parameterNames.some(isCredentialParameterKey);
+}
+
+function isPublicationNoticePointer(instancePath: string): boolean {
+  return /^\/publication\/(?:omissions|redactions)\/[0-9]+\/pointer$/u.test(instancePath);
+}
+
+function isMatterRecordJsonPointer(value: string): boolean {
+  if (!value.startsWith("/") || value.includes("\\") || /~(?:[^01]|$)/u.test(value)) {
+    return false;
+  }
+  const encodedRoot = value.slice(1).split("/", 1)[0] ?? "";
+  const root = encodedRoot.replace(/~1/gu, "/").replace(/~0/gu, "~");
+  return MATTER_RECORD_POINTER_ROOTS.has(root);
 }

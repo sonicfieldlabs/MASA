@@ -4,11 +4,11 @@
   "masaVersion": "0.1.0",
   "id": "https://masa.sonicfield.org/capabilities/0.1.0/reference",
   "implementation": {
-    "id": "https://masa.sonicfield.org/implementations/typescript-reference/0.1.0",
+    "id": "https://masa.sonicfield.org/implementations/typescript-reference/0.1.1",
     "name": "MASA local TypeScript reference",
-    "version": "0.1.0"
+    "version": "0.1.1"
   },
-  "generatedAt": "2026-07-27T00:00:00Z",
+  "generatedAt": "2026-08-09T00:00:00.000Z",
   "capabilities": [
     {
       "id": "https://masa.sonicfield.org/capabilities/0.1.0/matter.validate",

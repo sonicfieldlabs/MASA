@@ -12,6 +12,7 @@ import {
   cloneJson,
   hasErrorDiagnostics,
   isJsonObject,
+  MASA_PROTOCOL_VERSION,
   readString,
   sortDiagnostics,
 } from "@sonicfield/masa";
@@ -85,7 +86,7 @@ export function validateMatterRecord(value: unknown): ValidationResult<MatterRec
           "MASA_PROFILE_MISMATCH",
           "/profiles",
           "The record declares a profile unsupported by this protocol version",
-          "Use a profile defined by MASA 0.1.0 or migrate the record through an attributable operation",
+          `Use a profile defined by MASA ${MASA_PROTOCOL_VERSION} or migrate the record through an attributable operation`,
         ),
       );
       continue;
@@ -137,7 +138,7 @@ export function validateDocument<T = unknown>(
           "MASA_SCHEMA_UNKNOWN",
           "",
           "The requested embedded schema is unknown",
-          "Use a key from SCHEMA_IDS or the exact $id of an embedded MASA 0.1.0 schema",
+          `Use a key from SCHEMA_IDS or the exact $id of an embedded MASA ${MASA_PROTOCOL_VERSION} schema`,
         ),
       ],
     };
@@ -152,7 +153,7 @@ export function validateDocument<T = unknown>(
           "MASA_SCHEMA_UNKNOWN",
           "",
           "The requested embedded schema is unknown",
-          "Use a key from SCHEMA_IDS or the exact $id of an embedded MASA 0.1.0 schema",
+          `Use a key from SCHEMA_IDS or the exact $id of an embedded MASA ${MASA_PROTOCOL_VERSION} schema`,
         ),
       ],
     };
@@ -165,8 +166,9 @@ export function auditPublicRecord(value: unknown): ValidationResult<MatterRecord
   if (!structural.valid || structural.value === undefined) {
     return withVersionDiagnostic(structural, value);
   }
+  const recordValidation = validateMatterRecord(structural.value);
   return result(structural.value, [
-    ...auditMatterRecordSemantics(structural.value),
+    ...recordValidation.diagnostics,
     ...auditPublicSafety(structural.value),
   ]);
 }
@@ -269,7 +271,11 @@ function withVersionDiagnostic<T>(
   validation: ValidationResult<T>,
   value: unknown,
 ): ValidationResult<T> {
-  if (!isJsonObject(value) || value.masaVersion === undefined || value.masaVersion === "0.1.0") {
+  if (
+    !isJsonObject(value) ||
+    value.masaVersion === undefined ||
+    value.masaVersion === MASA_PROTOCOL_VERSION
+  ) {
     return validation;
   }
   return {

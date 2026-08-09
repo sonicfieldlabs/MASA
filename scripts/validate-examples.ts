@@ -1,11 +1,16 @@
 import { readFile, readdir } from "node:fs/promises";
 import { basename, join, relative, resolve } from "node:path";
-import { parseJsonStrict, StrictJsonError, type Diagnostic } from "@sonicfield/masa";
+import {
+  MASA_PROTOCOL_VERSION,
+  parseJsonStrict,
+  StrictJsonError,
+  type Diagnostic,
+} from "@sonicfield/masa";
 import { inspectBundle } from "@sonicfield/masa-bundle";
 import { auditPublicRecord, validateMatterRecord } from "@sonicfield/masa-validator";
 
 const root = resolve(import.meta.dirname, "..");
-const examples = join(root, "examples", "0.1.0");
+const examples = join(root, "examples", MASA_PROTOCOL_VERSION);
 
 const EXPECTED_VALID_COUNT = 9;
 

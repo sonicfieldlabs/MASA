@@ -1,9 +1,19 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-import { CAPABILITY_ID_PREFIX, IMPLEMENTATION_ID_PREFIX, SCHEMA_ID_PREFIX } from "./canonical.js";
+import {
+  CAPABILITY_ID_PREFIX,
+  IMPLEMENTATION_ID_PREFIX,
+  MASA_PROTOCOL_VERSION,
+  SCHEMA_ID_PREFIX,
+} from "./canonical.js";
+import {
+  REFERENCE_IMPLEMENTATION_GENERATED_AT,
+  referenceImplementationVersion,
+} from "./release-version.js";
 
-const output = resolve(import.meta.dirname, "..", "capabilities", "0.1.0", "reference.json");
+const implementationVersion = await referenceImplementationVersion();
+const output = resolve(import.meta.dirname, "..", "capabilities", MASA_PROTOCOL_VERSION, "reference.json");
 const resultSchema = `${SCHEMA_ID_PREFIX}tools/tool-result.schema.json`;
 
 function capability(
@@ -17,7 +27,7 @@ function capability(
     type: "masa:Capability",
     name,
     purpose,
-    supportedMasaVersions: ["0.1.0"],
+    supportedMasaVersions: [MASA_PROTOCOL_VERSION],
     profiles: overrides.profiles ?? ["core"],
     inputSchema: { state: "known", uri: input },
     outputSchema: { state: "known", uri: resultSchema },
@@ -44,15 +54,15 @@ function capability(
 
 const catalog = {
   capabilitySetType: "masa-capability-set",
-  capabilitySetVersion: "0.1.0",
-  masaVersion: "0.1.0",
+  capabilitySetVersion: MASA_PROTOCOL_VERSION,
+  masaVersion: MASA_PROTOCOL_VERSION,
   id: `${CAPABILITY_ID_PREFIX}reference`,
   implementation: {
-    id: `${IMPLEMENTATION_ID_PREFIX}typescript-reference/0.1.0`,
+    id: `${IMPLEMENTATION_ID_PREFIX}typescript-reference/${implementationVersion}`,
     name: "MASA local TypeScript reference",
-    version: "0.1.0"
+    version: implementationVersion
   },
-  generatedAt: "2026-07-27T00:00:00Z",
+  generatedAt: REFERENCE_IMPLEMENTATION_GENERATED_AT,
   capabilities: [
     capability(
       "matter.validate",

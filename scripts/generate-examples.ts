@@ -2,13 +2,13 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { createHash } from "node:crypto";
 
-import { CANONICAL_ROOT, SCHEMA_ID_PREFIX } from "./canonical.js";
+import { CANONICAL_ROOT, MASA_PROTOCOL_VERSION, SCHEMA_ID_PREFIX } from "./canonical.js";
 
 type JsonObject = Record<string, any>;
 
 const root = resolve(import.meta.dirname, "..");
-const validDirectory = join(root, "examples", "0.1.0", "valid");
-const invalidDirectory = join(root, "examples", "0.1.0", "invalid");
+const validDirectory = join(root, "examples", MASA_PROTOCOL_VERSION, "valid");
+const invalidDirectory = join(root, "examples", MASA_PROTOCOL_VERSION, "invalid");
 const minimalPath = join(validDirectory, "minimal-record.masa.json");
 const minimal = JSON.parse(await readFile(minimalPath, "utf8")) as JsonObject;
 
@@ -443,7 +443,7 @@ agent.capabilities = [
     type: "masa:Capability",
     name: "matter.validate",
     purpose: "Validate one record inside a host-configured local root without writing or using the network.",
-    supportedMasaVersions: ["0.1.0"],
+    supportedMasaVersions: [MASA_PROTOCOL_VERSION],
     profiles: ["core", "agent"],
     inputSchema: { state: "known", uri: `${SCHEMA_ID_PREFIX}matter-record.schema.json` },
     outputSchema: { state: "known", uri: `${SCHEMA_ID_PREFIX}conformance-result.schema.json` },
@@ -601,7 +601,7 @@ publication.publication = {
   redactions: [],
   attribution: known("MASA protocol example"),
   license: known("MIT for protocol fixture metadata; no media is included"),
-  retention: known("Retain while protocol 0.1.0 remains supported"),
+  retention: known(`Retain while protocol ${MASA_PROTOCOL_VERSION} remains supported`),
   correctionUrl: `${CANONICAL_ROOT}corrections`,
   revocationUrl: `${CANONICAL_ROOT}revocations`,
   approvedExtensionNamespaces: []
@@ -665,7 +665,7 @@ deletedState.history = {
 };
 await save(validDirectory, "deleted-state.masa.json", deletedState);
 
-const bundleDirectory = join(root, "examples", "0.1.0", "bundles", "transformation.masa");
+const bundleDirectory = join(root, "examples", MASA_PROTOCOL_VERSION, "bundles", "transformation.masa");
 const bundleRecord = structuredClone(transformation) as JsonObject;
 const bundledReceipt = bundleRecord.history.events[0] as JsonObject;
 bundleRecord.history = { mode: "external", href: "events.ndjson", eventIds: [bundledReceipt.id] };
@@ -678,8 +678,8 @@ await writeIfChanged(join(bundleDirectory, recordPath), recordText);
 await writeIfChanged(join(bundleDirectory, "events.ndjson"), eventText);
 const bundleManifest = {
   manifestType: "masa-bundle",
-  manifestVersion: "0.1.0",
-  masaVersion: "0.1.0",
+  manifestVersion: MASA_PROTOCOL_VERSION,
+  masaVersion: MASA_PROTOCOL_VERSION,
   id: "urn:uuid:00000000-0000-4000-8000-000000000b01",
   createdAt: "2026-07-27T12:11:00Z",
   createdBy: actorId,

@@ -2,7 +2,7 @@
 
 **MASA** is a project-agnostic Sound Matter Aware protocol. It provides a local-first, language-neutral contract for systems that need to describe, listen to, measure, transform, granulate, dissect, generate, map, relate, govern, and exchange sound as matter without confusing an audio file, a physical event, a perceptual account, or a computational claim. Conformance never depends on any other repository.
 
-Version `0.1.0` is the first public release, MIT-licensed and open to any project. Its normative sources are the specification, JSON Schemas, ontology registries, and conformance fixtures in this repository. The TypeScript packages, CLI, and MCP server are reference implementations of those artifacts.
+Protocol version `0.1.0` is the first public specification, MIT-licensed and open to any project. Its normative sources are the specification, JSON Schemas, ontology registries, and conformance fixtures in this repository. The current TypeScript reference-tooling release is `0.1.1`; tooling patches do not rename or silently revise the normative `0.1.0` resources.
 
 ## What is included
 
@@ -49,7 +49,7 @@ See [`docs/project-agnostic-integration.md`](docs/project-agnostic-integration.m
 
 ## Local conformance evidence
 
-The reference implementation records separate evidence for the `reader`, `writer`, `transformer`, `agent-host`, and `publisher` classes in [`conformance/0.1.0/evidence`](conformance/0.1.0/evidence). The current local run reports all five classes conformant on Node.js 22.22.3 for macOS arm64 against fixture-manifest digest `0240f5403d9d626c3eef75a55eb640cea84cf5b6d17d2824fe4874561c27be95`, computed over the examples, capability catalog, schemas, ontology registries, and JSON-LD context.
+The reference implementation records separate evidence for the `reader`, `writer`, `transformer`, `agent-host`, and `publisher` classes in [`conformance/0.1.0/evidence`](conformance/0.1.0/evidence). The current local run reports all five classes conformant on Node.js 22.22.3 for macOS arm64 against fixture-manifest digest `7f57b4870c2414936114ce906258e1d4816be340d1c3c591cb95eec80bc9cdea`. The digest is refreshed from the examples, specification, capability catalog, schemas, ontology registries, JSON-LD context, and executable conformance runner whenever evidence is intentionally recorded.
 
 Run `pnpm check` to regenerate derived code and verify conformance on the current machine. Run `pnpm conformance:evidence` only when intentionally recording a new local evidence snapshot. Conformance is always specific to an implementation version, MASA version, profile, class, platform, and exact fixture set; it is not a universal certification.
 
