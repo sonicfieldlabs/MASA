@@ -9,6 +9,9 @@ import { referenceImplementationVersion } from "./release-version.js";
 
 const execute = promisify(execFile);
 const root = resolve(import.meta.dirname, "..");
+const pnpmExecutable = process.platform === "win32" ? (process.env.ComSpec ?? "cmd.exe") : "pnpm";
+const pnpmArguments = (arguments_: string[]): string[] =>
+  process.platform === "win32" ? ["/d", "/c", "pnpm", ...arguments_] : arguments_;
 const expectedLicense = (await readFile(join(root, "LICENSE"), "utf8")).trimEnd();
 const implementationVersion = await referenceImplementationVersion();
 const expectedHelpBanner = `MASA local CLI ${implementationVersion} (protocol ${MASA_PROTOCOL_VERSION})`;
@@ -26,7 +29,7 @@ try {
   const modules = join(temporary, "node_modules");
   for (const item of packages) {
     const archive = join(temporary, item.archive);
-    await execute("pnpm", ["pack", "--out", archive], {
+    await execute(pnpmExecutable, pnpmArguments(["pack", "--out", archive]), {
       cwd: join(root, item.directory),
       maxBuffer: 16 * 1024 * 1024,
     });

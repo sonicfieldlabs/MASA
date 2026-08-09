@@ -7,6 +7,9 @@ import { MASA_PROTOCOL_VERSION } from "./canonical.js";
 
 const execute = promisify(execFile);
 const root = resolve(import.meta.dirname, "..");
+const pnpmExecutable = process.platform === "win32" ? (process.env.ComSpec ?? "cmd.exe") : "pnpm";
+const pnpmArguments = (arguments_: string[]): string[] =>
+  process.platform === "win32" ? ["/d", "/c", "pnpm", ...arguments_] : arguments_;
 const expectedLicense = (await readFile(join(root, "LICENSE"), "utf8")).trimEnd();
 const packages = ["packages/core", "packages/validator", "packages/bundle", "cli", "mcp"];
 const prohibitedPath = /(?:^|\/)(?:node_modules|src)(?:\/|$)|\.tsbuildinfo$|\.test\.(?:js|d\.ts)(?:\.map)?$/u;
@@ -33,7 +36,7 @@ for (const packagePath of packages) {
   if (packageJson.private !== true) {
     throw new Error(`${packagePath} must remain private for MASA ${MASA_PROTOCOL_VERSION}.`);
   }
-  const { stdout } = await execute("pnpm", ["pack", "--dry-run", "--json"], {
+  const { stdout } = await execute(pnpmExecutable, pnpmArguments(["pack", "--dry-run", "--json"]), {
     cwd: directory,
     maxBuffer: 16 * 1024 * 1024
   });
