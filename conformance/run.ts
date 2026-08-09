@@ -6,6 +6,8 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import {
   parseJsonStrict,
+  MASA_PROTOCOL_VERSION,
+  MASA_REFERENCE_IMPLEMENTATION_VERSION,
   stableStringify,
   StrictJsonError,
   type Diagnostic,
@@ -29,7 +31,7 @@ interface TestResult {
 }
 
 const root = resolve(import.meta.dirname, "..");
-const examples = join(root, "examples", "0.1.0");
+const examples = join(root, "examples", MASA_PROTOCOL_VERSION);
 const validDirectory = join(examples, "valid");
 const invalidDirectory = join(examples, "invalid");
 
@@ -39,7 +41,7 @@ function conformanceFailure(id: string, error: unknown): Diagnostic {
     severity: "error",
     instancePath: `/${id}`,
     message: error instanceof Error ? error.message : "A conformance assertion failed.",
-    remediation: "Correct the implementation or fixture, then rerun the exact MASA 0.1.0 suite."
+    remediation: `Correct the implementation or fixture, then rerun the exact MASA ${MASA_PROTOCOL_VERSION} suite.`
   };
 }
 
@@ -73,7 +75,7 @@ function validateDeclaredRecord(value: MatterRecord) {
     : validateMatterRecord(value);
 }
 
-const FIXTURE_EXTENSIONS = /\.(?:json|jsonld|ndjson)$/u;
+const EVIDENCE_INPUT_EXTENSIONS = /\.(?:json|jsonld|md|ndjson)$/u;
 
 async function fixtureDigest(): Promise<{ digest: string; byteLength: number }> {
   // The digest witnesses the exact executable fixture set together with the
@@ -83,20 +85,26 @@ async function fixtureDigest(): Promise<{ digest: string; byteLength: number }> 
   // digest is identical across platforms and locales.
   const roots = [
     examples,
-    join(root, "capabilities", "0.1.0"),
-    join(root, "schemas", "0.1.0"),
-    join(root, "ontology", "0.1.0"),
-    join(root, "contexts", "0.1.0")
+    join(root, "capabilities", MASA_PROTOCOL_VERSION),
+    join(root, "schemas", MASA_PROTOCOL_VERSION),
+    join(root, "ontology", MASA_PROTOCOL_VERSION),
+    join(root, "contexts", MASA_PROTOCOL_VERSION),
+    join(root, "spec", MASA_PROTOCOL_VERSION),
   ];
   const labeled: Array<{ path: string; label: string }> = [];
   for (const directory of roots) {
     const entries = await readdir(directory, { recursive: true, withFileTypes: true });
     for (const entry of entries) {
-      if (!entry.isFile() || !FIXTURE_EXTENSIONS.test(entry.name)) continue;
+      if (!entry.isFile() || !EVIDENCE_INPUT_EXTENSIONS.test(entry.name)) continue;
       const path = join(entry.parentPath, entry.name);
       labeled.push({ path, label: relative(root, path).split(sep).join("/") });
     }
   }
+  const runnerPath = join(root, "conformance", "run.ts");
+  labeled.push({
+    path: runnerPath,
+    label: relative(root, runnerPath).split(sep).join("/"),
+  });
   labeled.sort((left, right) => (left.label < right.label ? -1 : left.label > right.label ? 1 : 0));
   const hash = createHash("sha256");
   let byteLength = 0;
@@ -215,7 +223,9 @@ tests.push(await test("transformer.lineage-and-failure", async () => {
 }));
 
 tests.push(await test("agent-host.capabilities-and-record", async () => {
-  const catalog = parseJsonStrict(await readFile(join(root, "capabilities", "0.1.0", "reference.json"), "utf8"));
+  const catalog = parseJsonStrict(
+    await readFile(join(root, "capabilities", MASA_PROTOCOL_VERSION, "reference.json"), "utf8"),
+  );
   const catalogValidation = validateCapabilitySet(catalog);
   assert(catalogValidation.valid, `Capability catalog failed: ${stableStringify(catalogValidation.diagnostics)}`);
   const agentRecord = await record(join(validDirectory, "agent.masa.json"));
@@ -229,7 +239,10 @@ tests.push(await test("agent-host.mcp-stdio", async () => {
     args: [serverPath],
     env: { ...process.env, MASA_ALLOWED_ROOTS: root }
   });
-  const client = new Client({ name: "masa-conformance", version: "0.1.0" });
+  const client = new Client({
+    name: "masa-conformance",
+    version: MASA_REFERENCE_IMPLEMENTATION_VERSION,
+  });
   try {
     await client.connect(transport);
     const listed = await client.listTools();
@@ -351,11 +364,17 @@ const evidence = classes.map((className, index) => {
   return {
     id: `urn:uuid:10000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}`,
     type: "masa:ConformanceResult",
-    suite: { name: "masa-typescript-reference-conformance", version: "0.1.0" },
-    implementation: { name: "MASA local TypeScript reference", version: "0.1.0" },
+    suite: {
+      name: "masa-typescript-reference-conformance",
+      version: MASA_REFERENCE_IMPLEMENTATION_VERSION,
+    },
+    implementation: {
+      name: "MASA local TypeScript reference",
+      version: MASA_REFERENCE_IMPLEMENTATION_VERSION,
+    },
     subject: "@sonicfield/masa workspace",
     platform: { os: platform(), architecture: arch(), runtime: `node ${process.version}` },
-    masaVersion: "0.1.0",
+    masaVersion: MASA_PROTOCOL_VERSION,
     profile: classProfiles[className],
     class: className,
     status: failed.length === 0 ? "conformant" : "failed",
@@ -374,6 +393,75 @@ const evidence = classes.map((className, index) => {
   };
 });
 
+function evidenceFreshnessProjection(value: unknown): unknown {
+  const source = typeof value === "object" && value !== null
+    ? value as Record<string, unknown>
+    : {};
+  const fixtureManifestDigest = typeof source.fixtureManifestDigest === "object" && source.fixtureManifestDigest !== null
+    ? source.fixtureManifestDigest as Record<string, unknown>
+    : {};
+  return {
+    id: source.id,
+    type: source.type,
+    suite: source.suite,
+    implementation: source.implementation,
+    subject: source.subject,
+    masaVersion: source.masaVersion,
+    profile: source.profile,
+    class: source.class,
+    status: source.status,
+    migrationStatus: source.migrationStatus,
+    tests: source.tests,
+    fixtureManifestDigest: {
+      algorithm: fixtureManifestDigest.algorithm,
+      digest: fixtureManifestDigest.digest,
+      byteLength: fixtureManifestDigest.byteLength,
+      status: fixtureManifestDigest.status,
+    },
+    diagnostics: source.diagnostics,
+    extensions: source.extensions,
+  };
+}
+
+async function verifyTrackedEvidence(): Promise<void> {
+  const evidenceDirectory = join(root, "conformance", MASA_PROTOCOL_VERSION, "evidence");
+  const expectedFileNames = evidence.map((result) => `${result.class}.json`).sort();
+  const actualFileNames = (await readdir(evidenceDirectory))
+    .filter((name) => name.endsWith(".json"))
+    .sort();
+  if (stableStringify(actualFileNames) !== stableStringify(expectedFileNames)) {
+    throw new Error(
+      `Tracked conformance evidence must contain exactly: ${expectedFileNames.join(", ")}.`,
+    );
+  }
+  for (const result of evidence) {
+    const path = join(evidenceDirectory, `${result.class}.json`);
+    const recorded = parseJsonStrict(await readFile(path, "utf8"));
+    const validation = validateDocument("conformanceResult", recorded);
+    if (!validation.valid) {
+      throw new Error(
+        `Tracked ${relative(root, path)} is not valid conformance evidence: ${stableStringify(validation.diagnostics)}.`,
+      );
+    }
+    if (
+      stableStringify(evidenceFreshnessProjection(recorded)) !==
+      stableStringify(evidenceFreshnessProjection(result))
+    ) {
+      throw new Error(
+        `Tracked ${relative(root, path)} is stale. Run pnpm conformance:evidence after an intentional implementation or fixture change.`,
+      );
+    }
+  }
+
+  const readme = await readFile(join(root, "README.md"), "utf8");
+  const documentedDigest = /fixture-manifest digest `([a-f0-9]{64})`/u.exec(readme)?.[1];
+  if (documentedDigest !== fixture.digest) {
+    throw new Error(
+      "README.md does not report the current conformance fixture-manifest digest. Refresh its Local conformance evidence section.",
+    );
+  }
+}
+
 for (const result of evidence) {
   const validation = validateDocument("conformanceResult", result);
   if (!validation.valid) {
@@ -381,13 +469,23 @@ for (const result of evidence) {
   }
 }
 
+const conformanceFailed = evidence.some((result) => result.status === "failed");
 if (process.argv.includes("--write-evidence")) {
-  const evidenceDirectory = join(root, "conformance", "0.1.0", "evidence");
+  const evidenceDirectory = join(root, "conformance", MASA_PROTOCOL_VERSION, "evidence");
   await mkdir(evidenceDirectory, { recursive: true });
   for (const result of evidence) {
     await writeFile(join(evidenceDirectory, `${result.class}.json`), `${stableStringify(result, 2)}\n`, "utf8");
   }
+} else if (!conformanceFailed) {
+  await verifyTrackedEvidence();
 }
 
-process.stdout.write(`${stableStringify({ suite: "masa-typescript-reference-conformance", version: "0.1.0", evidence }, 2)}\n`);
-if (evidence.some((result) => result.status === "failed")) process.exitCode = 1;
+process.stdout.write(
+  `${stableStringify({
+    suite: "masa-typescript-reference-conformance",
+    version: MASA_REFERENCE_IMPLEMENTATION_VERSION,
+    masaVersion: MASA_PROTOCOL_VERSION,
+    evidence,
+  }, 2)}\n`,
+);
+if (conformanceFailed) process.exitCode = 1;

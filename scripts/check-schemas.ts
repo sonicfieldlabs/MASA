@@ -3,10 +3,10 @@ import { join, relative, resolve, sep } from "node:path";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
-import { SCHEMA_ID_PREFIX, VOCAB_NAMESPACE } from "./canonical.js";
+import { MASA_PROTOCOL_VERSION, SCHEMA_ID_PREFIX, VOCAB_NAMESPACE } from "./canonical.js";
 
 const root = resolve(import.meta.dirname, "..");
-const schemaRoot = join(root, "schemas", "0.1.0");
+const schemaRoot = join(root, "schemas", MASA_PROTOCOL_VERSION);
 const EXPECTED_SCHEMA_COUNT = 29;
 
 async function filesBelow(directory: string): Promise<string[]> {
@@ -40,7 +40,7 @@ const schemas = await Promise.all(
 const ids = new Map<string, string>();
 for (const { path, schema } of schemas) {
   if (typeof schema.$id !== "string" || !schema.$id.startsWith(SCHEMA_ID_PREFIX)) {
-    throw new Error(`${relative(root, path)} has no stable MASA 0.1.0 $id.`);
+    throw new Error(`${relative(root, path)} has no stable MASA ${MASA_PROTOCOL_VERSION} $id.`);
   }
   if (ids.has(schema.$id)) throw new Error(`Duplicate schema $id ${schema.$id}.`);
   ids.set(schema.$id, path);
@@ -100,14 +100,14 @@ function schemaUriReferences(value: unknown): string[] {
   return found;
 }
 
-const termRegistry = await validateArtifact("term-registry", join(root, "ontology", "0.1.0", "terms.json"));
-const relationRegistry = await validateArtifact("relation-registry", join(root, "ontology", "0.1.0", "relations.json"));
-const capabilityCatalog = await validateArtifact("capability-set", join(root, "capabilities", "0.1.0", "reference.json"));
-const jsonldContext = JSON.parse(await readFile(join(root, "contexts", "0.1.0", "masa.jsonld"), "utf8")) as Record<string, unknown>;
+const termRegistry = await validateArtifact("term-registry", join(root, "ontology", MASA_PROTOCOL_VERSION, "terms.json"));
+const relationRegistry = await validateArtifact("relation-registry", join(root, "ontology", MASA_PROTOCOL_VERSION, "relations.json"));
+const capabilityCatalog = await validateArtifact("capability-set", join(root, "capabilities", MASA_PROTOCOL_VERSION, "reference.json"));
+const jsonldContext = JSON.parse(await readFile(join(root, "contexts", MASA_PROTOCOL_VERSION, "masa.jsonld"), "utf8")) as Record<string, unknown>;
 
 const contextBody = jsonldContext["@context"];
 if (contextBody === null || typeof contextBody !== "object" || Array.isArray(contextBody)) {
-  throw new Error("contexts/0.1.0/masa.jsonld must declare one @context object.");
+  throw new Error(`contexts/${MASA_PROTOCOL_VERSION}/masa.jsonld must declare one @context object.`);
 }
 if ((contextBody as Record<string, unknown>).masa !== VOCAB_NAMESPACE) {
   throw new Error("The JSON-LD masa prefix must equal the canonical vocabulary namespace.");
@@ -122,10 +122,10 @@ for (const registry of [termRegistry, relationRegistry]) {
 // registered schema $id, so the catalog cannot silently outlive a migration.
 for (const uri of schemaUriReferences(capabilityCatalog)) {
   if (uri.startsWith(SCHEMA_ID_PREFIX) && !ids.has(uri)) {
-    throw new Error(`capabilities/0.1.0/reference.json names an unregistered schema URI: ${uri}`);
+    throw new Error(`capabilities/${MASA_PROTOCOL_VERSION}/reference.json names an unregistered schema URI: ${uri}`);
   }
   if (!uri.startsWith(SCHEMA_ID_PREFIX)) {
-    throw new Error(`capabilities/0.1.0/reference.json names a non-canonical schema URI: ${uri}`);
+    throw new Error(`capabilities/${MASA_PROTOCOL_VERSION}/reference.json names a non-canonical schema URI: ${uri}`);
   }
 }
 

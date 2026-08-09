@@ -1,6 +1,6 @@
 {
   "name": "@sonicfield/masa-workspace",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "license": "MIT",
   "description": "Local-first reference repository for the MASA Sound Matter Aware protocol",
@@ -26,17 +26,17 @@
     "mcp": "node mcp/dist/server.js"
   },
   "devDependencies": {
-    "@types/node": "24.3.0",
-    "@vitest/coverage-v8": "4.1.10",
     "@modelcontextprotocol/sdk": "1.30.0",
     "@sonicfield/masa": "workspace:*",
     "@sonicfield/masa-bundle": "workspace:*",
     "@sonicfield/masa-validator": "workspace:*",
+    "@types/node": "24.13.3",
+    "@vitest/coverage-v8": "4.1.10",
     "ajv": "8.20.0",
     "ajv-formats": "3.0.1",
     "json-schema-to-typescript": "15.0.4",
-    "publint": "0.3.22",
-    "tsx": "4.23.1",
+    "publint": "0.3.23",
+    "tsx": "4.23.11",
     "typescript": "7.0.2",
     "vitest": "4.1.10"
   }

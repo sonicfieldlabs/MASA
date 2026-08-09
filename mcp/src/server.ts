@@ -3,7 +3,13 @@ import { realpathSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { protocolResources, referenceCapabilitySet, stableStringify } from "@sonicfield/masa";
+import {
+  MASA_PROTOCOL_VERSION,
+  MASA_REFERENCE_IMPLEMENTATION_VERSION,
+  protocolResources,
+  referenceCapabilitySet,
+  stableStringify,
+} from "@sonicfield/masa";
 import { getEmbeddedSchema } from "@sonicfield/masa-validator";
 import { z } from "zod";
 import {
@@ -50,7 +56,10 @@ function asToolResponse(result: Awaited<ReturnType<typeof validateTarget>>) {
 
 export async function createMasaServer(): Promise<McpServer> {
   const roots = await configuredRoots();
-  const server = new McpServer({ name: "masa-local", version: "0.1.0" });
+  const server = new McpServer({
+    name: "masa-local",
+    version: MASA_REFERENCE_IMPLEMENTATION_VERSION,
+  });
 
   const matterRecordSchema = getEmbeddedSchema("matterRecord");
   if (matterRecordSchema === undefined) throw new Error("The embedded MatterRecord schema is absent.");
@@ -58,7 +67,7 @@ export async function createMasaServer(): Promise<McpServer> {
     ...protocolResources,
     {
       name: "masa-record-schema",
-      uri: "masa://schemas/0.1.0/matter-record",
+      uri: `masa://schemas/${MASA_PROTOCOL_VERSION}/matter-record`,
       mimeType: "application/schema+json",
       text: stableStringify(matterRecordSchema, 2)
     },

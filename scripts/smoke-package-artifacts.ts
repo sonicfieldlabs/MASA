@@ -4,9 +4,17 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { promisify } from "node:util";
 
+import { MASA_PROTOCOL_VERSION } from "./canonical.js";
+import { referenceImplementationVersion } from "./release-version.js";
+
 const execute = promisify(execFile);
 const root = resolve(import.meta.dirname, "..");
+const pnpmExecutable = process.platform === "win32" ? (process.env.ComSpec ?? "cmd.exe") : "pnpm";
+const pnpmArguments = (arguments_: string[]): string[] =>
+  process.platform === "win32" ? ["/d", "/c", "pnpm", ...arguments_] : arguments_;
 const expectedLicense = (await readFile(join(root, "LICENSE"), "utf8")).trimEnd();
+const implementationVersion = await referenceImplementationVersion();
+const expectedHelpBanner = `MASA local CLI ${implementationVersion} (protocol ${MASA_PROTOCOL_VERSION})`;
 const temporary = await mkdtemp(join(tmpdir(), "masa-packed-smoke-"));
 
 const packages = [
@@ -21,7 +29,7 @@ try {
   const modules = join(temporary, "node_modules");
   for (const item of packages) {
     const archive = join(temporary, item.archive);
-    await execute("pnpm", ["pack", "--out", archive], {
+    await execute(pnpmExecutable, pnpmArguments(["pack", "--out", archive]), {
       cwd: join(root, item.directory),
       maxBuffer: 16 * 1024 * 1024,
     });
@@ -54,7 +62,9 @@ try {
 
   const smoke = `
     const core = await import("@sonicfield/masa");
-    if (!core.protocolResources.some((item) => item.uri === "masa://spec/0.1.0/core")) throw new Error("core resource missing");
+    if (!core.protocolResources.some((item) => item.uri === ${JSON.stringify(`masa://spec/${MASA_PROTOCOL_VERSION}/core`)})) throw new Error("core resource missing");
+    if (core.MASA_PROTOCOL_VERSION !== ${JSON.stringify(MASA_PROTOCOL_VERSION)}) throw new Error("protocol version missing");
+    if (core.MASA_REFERENCE_IMPLEMENTATION_VERSION !== ${JSON.stringify(implementationVersion)}) throw new Error("implementation version missing");
     if (!core.referenceCapabilitySet.capabilities.some((item) => item.name === "matter.trace_lineage")) throw new Error("capability missing");
     if (!core.referenceCapabilitySet.capabilities.some((item) => item.name === "matter.plan_processing")) throw new Error("processing capability missing");
     const validator = await import("@sonicfield/masa-validator");
@@ -86,7 +96,7 @@ try {
     cwd: temporary,
     maxBuffer: 1024 * 1024,
   });
-  if (!helpRun.stdout.includes("MASA 0.1.0 local CLI")) {
+  if (!helpRun.stdout.includes(expectedHelpBanner)) {
     throw new Error("The symlinked CLI bin produced no usage output; the ESM entry guard regressed.");
   }
 

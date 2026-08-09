@@ -60,6 +60,183 @@ describe("offline MASA validation", () => {
     );
   });
 
+  it("enforces every declared profile during public audit", () => {
+    const record = structuredClone(
+      fixture("examples/0.1.0/valid/publication.masa.json"),
+    ) as any;
+    record.profiles.push("audio");
+
+    const result = auditPublicRecord(record);
+
+    expect(result.valid).toBe(false);
+    expect(result.diagnostics.map(({ code }) => code)).toContain("MASA_PROFILE_MISMATCH");
+  });
+
+  it("detects public-safety bypass forms", () => {
+    const base = fixture("examples/0.1.0/valid/publication.masa.json");
+    const cases: Array<{ mutate(record: any): void; code: string }> = [
+      {
+        mutate: (record) => {
+          record.representations[0].locator.value = "/workspace/private/master.wav";
+        },
+        code: "MASA_PUBLIC_PATH",
+      },
+      {
+        mutate: (record) => {
+          record.representations[0].locator.value = "http://[::ffff:7f00:1]/private";
+        },
+        code: "MASA_PUBLIC_PRIVATE_ENDPOINT",
+      },
+      {
+        mutate: (record) => {
+          record.extensions = { "example:geo": { coordinates: [[[-74.1, 4.6]]] } };
+          record.publication.approvedExtensionNamespaces = ["example:"];
+        },
+        code: "MASA_PUBLIC_PRECISE_LOCATION",
+      },
+      {
+        mutate: (record) => {
+          record.extensions = { "example:provider": { privateKey: "synthetic-private-key" } };
+          record.publication.approvedExtensionNamespaces = ["example:"];
+        },
+        code: "MASA_PUBLIC_SECRET",
+      },
+      {
+        mutate: (record) => {
+          record.extensions = {
+            "example:provider": { "x-goog-security-token": "synthetic-session-credential" },
+          };
+          record.publication.approvedExtensionNamespaces = ["example:"];
+        },
+        code: "MASA_PUBLIC_SECRET",
+      },
+      {
+        mutate: (record) => {
+          record.extensions = { "example:apiKey": "synthetic-namespaced-secret" };
+          record.publication.approvedExtensionNamespaces = ["example:"];
+        },
+        code: "MASA_PUBLIC_SECRET",
+      },
+      {
+        mutate: (record) => {
+          record.extensions = {
+            "example:provider": { openaiApiKey: "synthetic-prefixed-secret" },
+          };
+          record.publication.approvedExtensionNamespaces = ["example:"];
+        },
+        code: "MASA_PUBLIC_SECRET",
+      },
+      {
+        mutate: (record) => {
+          record.representations[0].locator.value = "https://example.test/audio#access_token=synthetic";
+        },
+        code: "MASA_PUBLIC_SECRET",
+      },
+      {
+        mutate: (record) => {
+          record.representations[0].locator.value = "https://audio.sonicfield.org/example.wav?key=synthetic";
+        },
+        code: "MASA_PUBLIC_SECRET",
+      },
+      {
+        mutate: (record) => {
+          record.representations[0].locator.value = "https://audio.sonicfield.org/example.wav?X-Amz-Security-Token=synthetic";
+        },
+        code: "MASA_PUBLIC_SECRET",
+      },
+      {
+        mutate: (record) => {
+          record.representations[0].locator.value = "FILE:///Users/alice/private.wav";
+        },
+        code: "MASA_PUBLIC_PATH",
+      },
+      {
+        mutate: (record) => {
+          record.representations[0].locator.value = "  file:///Users/alice/private.wav";
+        },
+        code: "MASA_PUBLIC_PATH",
+      },
+      {
+        mutate: (record) => {
+          record.representations[0].locator.value = "../private/master.wav";
+        },
+        code: "MASA_PUBLIC_PATH",
+      },
+      {
+        mutate: (record) => {
+          record.representations[0].locator.value = "..\\private\\master.wav";
+        },
+        code: "MASA_PUBLIC_PATH",
+      },
+      {
+        mutate: (record) => {
+          record.representations[0].locator.value = "%252e%252e%252fprivate.wav";
+        },
+        code: "MASA_PUBLIC_PATH",
+      },
+      {
+        mutate: (record) => {
+          record.representations[0].locator.value = "~alice/private.wav";
+        },
+        code: "MASA_PUBLIC_PATH",
+      },
+      {
+        mutate: (record) => {
+          record.representations[0].locator.value = "C:private.wav";
+        },
+        code: "MASA_PUBLIC_PATH",
+      },
+      {
+        mutate: (record) => {
+          record.representations[0].locator.value = "https://intranet/private";
+        },
+        code: "MASA_PUBLIC_PRIVATE_ENDPOINT",
+      },
+      {
+        mutate: (record) => {
+          record.representations[0].locator.value = "http://[400::1]/private";
+        },
+        code: "MASA_PUBLIC_PRIVATE_ENDPOINT",
+      },
+      {
+        mutate: (record) => {
+          record.extensions = { "example:geo": { Coordinates: [[[-74.1, 4.6]]] } };
+          record.publication.approvedExtensionNamespaces = ["example:"];
+        },
+        code: "MASA_PUBLIC_PRECISE_LOCATION",
+      },
+      {
+        mutate: (record) => {
+          record.publication.omissions = [{
+            pointer: "/Users/alice/.ssh/id_rsa",
+            category: "synthetic",
+            reason: "synthetic invalid pointer",
+          }];
+        },
+        code: "MASA_PUBLIC_PATH",
+      },
+    ];
+
+    for (const testCase of cases) {
+      const record = structuredClone(base) as any;
+      testCase.mutate(record);
+      expect(auditPublicRecord(record).diagnostics.map(({ code }) => code)).toContain(testCase.code);
+    }
+  });
+
+  it("distinguishes valid publication JSON Pointers from local paths", () => {
+    const record = structuredClone(
+      fixture("examples/0.1.0/valid/publication.masa.json"),
+    ) as any;
+    record.publication.omissions = [{
+      pointer: "/representations/0/locator",
+      category: "synthetic",
+      reason: "synthetic valid pointer",
+    }];
+
+    expect(auditPublicRecord(record).diagnostics.map(({ code }) => code)).not.toContain("MASA_PUBLIC_PATH");
+  });
+
   it("emits remediable, value-free structural diagnostics", () => {
     const result = validateMatterRecord({
       masaVersion: "9.9.9",

@@ -3,6 +3,7 @@ import { extname } from "node:path";
 import {
   generateId,
   indexRecord,
+  MASA_PROTOCOL_VERSION,
   parseJsonStrict,
   summarizeRecord,
   traceLineage,
@@ -139,13 +140,11 @@ export async function traceLineageTarget(
 export async function auditPublicTarget(input: string, roots: readonly string[]): Promise<McpOperationResult> {
   try {
     const record = await loadRecord(input, roots);
-    const validation = validateMatterRecord(record);
     const audit = auditPublicRecord(record);
-    const diagnostics = uniqueDiagnostics([...validation.diagnostics, ...audit.diagnostics]);
     return {
       status: "completed",
-      valid: validation.valid && audit.valid,
-      diagnostics,
+      valid: audit.valid,
+      diagnostics: audit.diagnostics,
       data: { audited: true }
     };
   } catch (error) {
@@ -185,8 +184,8 @@ export async function planProcessingTarget(
   try {
     const request = {
       requestType: "masa-processing-request",
-      requestVersion: "0.1.0",
-      masaVersion: "0.1.0",
+      requestVersion: MASA_PROTOCOL_VERSION,
+      masaVersion: MASA_PROTOCOL_VERSION,
       id: generateId(),
       createdAt: new Date().toISOString(),
       operationType: input.operationType,
@@ -202,20 +201,24 @@ export async function planProcessingTarget(
 
     if (input.path !== undefined) {
       const record = await loadRecord(input.path, roots);
-      const index = indexRecord(record);
-      input.inputs.forEach((reference, position) => {
-        const entity = index.byId.get(reference);
-        if (entity === undefined || entity.collection !== "representations") {
-          diagnostics.push({
-            code: "MASA_UNRESOLVED_REF",
-            severity: "error",
-            instancePath: `/inputs/${position}`,
-            schemaPath: "",
-            message: "A processing input does not resolve to a representation in the target record",
-            remediation: "Reference an existing representation identifier from the target record."
-          });
-        }
-      });
+      const recordValidation = validateMatterRecord(record);
+      diagnostics.push(...recordValidation.diagnostics);
+      if (recordValidation.valid) {
+        const index = indexRecord(record);
+        input.inputs.forEach((reference, position) => {
+          const entity = index.byId.get(reference);
+          if (entity === undefined || entity.collection !== "representations") {
+            diagnostics.push({
+              code: "MASA_UNRESOLVED_REF",
+              severity: "error",
+              instancePath: `/inputs/${position}`,
+              schemaPath: "",
+              message: "A processing input does not resolve to a representation in the target record",
+              remediation: "Reference an existing representation identifier from the target record."
+            });
+          }
+        });
+      }
     }
 
     const valid = !diagnostics.some((item) => item.severity === "error");

@@ -7,6 +7,10 @@ export type {
 } from "./generated/index.js";
 export { protocolResources, referenceCapabilitySet } from "./generated/protocol-resources.js";
 export {
+  MASA_PROTOCOL_VERSION,
+  MASA_REFERENCE_IMPLEMENTATION_VERSION,
+} from "./generated/version.js";
+export {
   acyclicRelationOrientations,
   acyclicRelationPredicates,
   lineageRelationDirections,
@@ -56,7 +60,11 @@ export type {
 } from "./public-projection.js";
 export {
   createPublicProjection,
+  isCredentialParameterKey,
+  isNonPublicHostname,
   isPrivateHostname,
+  isSecretConfigurationKey,
+  isUnsafeFilesystemLocator,
   PublicProjectionError,
 } from "./public-projection.js";
 export type { JsonVisit, JsonVisitor } from "./traversal.js";

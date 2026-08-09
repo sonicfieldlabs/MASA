@@ -8,6 +8,7 @@ import {
   open,
   rename,
   rm,
+  rmdir,
   unlink
 } from "node:fs/promises";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
@@ -208,7 +209,7 @@ export async function packDirectoryBundle(
   const parent = dirname(destination);
   await assertSafeDestinationParent(parent);
   await assertAbsent(destination);
-  const temporary = join(parent, `.${destination.split("/").at(-1) ?? "bundle"}.${randomUUID()}.tmp`);
+  const temporary = join(parent, `.masa-pack.${randomUUID()}.tmp`);
 
   try {
     const zip = new yazl.ZipFile();
@@ -306,11 +307,21 @@ export async function unpackZipBundle(
       }
       throw error;
     }
-    try {
+    if (process.platform === "win32") {
+      // Windows cannot rename a directory over the empty claim directory.
+      // Removing only our still-empty claim preserves no-overwrite behavior:
+      // a destination created in the gap makes rename fail rather than replace it.
+      await rmdir(destination);
       await rename(temporary, destination);
-    } catch (error) {
-      await rm(destination, { recursive: false, force: true }).catch(() => undefined);
-      throw error;
+    } else {
+      try {
+        await rename(temporary, destination);
+      } catch (error) {
+        // Remove only the empty claim we created. If another process populated
+        // it, rmdir refuses and its data is preserved.
+        await rmdir(destination).catch(() => undefined);
+        throw error;
+      }
     }
     promoted = true;
     return extractedInspection;

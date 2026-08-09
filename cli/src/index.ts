@@ -5,6 +5,8 @@ import { dirname, extname, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import {
   createPublicProjection,
+  MASA_PROTOCOL_VERSION,
+  MASA_REFERENCE_IMPLEMENTATION_VERSION,
   parseJsonStrict,
   referenceCapabilitySet,
   stableStringify,
@@ -136,8 +138,8 @@ function processingTemplate(operation: string): Record<string, unknown> {
   }
   return {
     requestType: "masa-processing-request",
-    requestVersion: "0.1.0",
-    masaVersion: "0.1.0",
+    requestVersion: MASA_PROTOCOL_VERSION,
+    masaVersion: MASA_PROTOCOL_VERSION,
     id: PLACEHOLDER_ID,
     createdAt: "2026-01-01T00:00:00Z",
     operationType: `matter.${operation}`,
@@ -173,7 +175,7 @@ async function writeNewJson(path: string, value: unknown): Promise<void> {
 
 function usage(): string {
   return [
-    "MASA 0.1.0 local CLI",
+    `MASA local CLI ${MASA_REFERENCE_IMPLEMENTATION_VERSION} (protocol ${MASA_PROTOCOL_VERSION})`,
     "",
     "masa validate <record-or-bundle> [--json]",
     "masa inspect <record-or-bundle> [--json]",
@@ -187,7 +189,7 @@ function usage(): string {
     "masa lineage <record> <entity-id> [--direction ancestors|descendants|both] [--max-depth 1..64] [--json]",
     "masa conformance <reader|writer|transformer|agent-host|publisher> <record> [--json]",
     "masa schema list [--json]",
-    "masa schema show <name> [--version 0.1.0] [--json]",
+    `masa schema show <name> [--version ${MASA_PROTOCOL_VERSION}] [--json]`,
     "masa capabilities [--json]"
   ].join("\n");
 }
@@ -205,7 +207,6 @@ async function validateCommand(path: string): Promise<{ output: unknown; code: n
 
 async function conformanceCommand(className: string, path: string): Promise<{ output: unknown; code: number }> {
   const record = await loadRecord(resolve(path));
-  const validation = validateMatterRecord(record);
   const requiredProfile: Record<string, string> = {
     reader: "core",
     writer: "core",
@@ -215,6 +216,9 @@ async function conformanceCommand(className: string, path: string): Promise<{ ou
   };
   const profile = requiredProfile[className];
   if (!profile) throw new UsageError(`Unknown conformance class ${className}.`);
+  const validation = className === "publisher"
+    ? auditPublicRecord(record)
+    : validateMatterRecord(record);
   const profilePresent =
     Array.isArray(record.profiles) &&
     (record.profiles as readonly unknown[]).includes(profile);
@@ -222,7 +226,7 @@ async function conformanceCommand(className: string, path: string): Promise<{ ou
   return {
     output: {
       suite: "masa-artifact-check",
-      suiteVersion: "0.1.0",
+      suiteVersion: MASA_REFERENCE_IMPLEMENTATION_VERSION,
       masaVersion: typeof record.masaVersion === "string" ? record.masaVersion : "undeclared",
       class: className,
       profile,
@@ -369,9 +373,9 @@ export async function runCli(argv: readonly string[], io: CliIo = defaultIo): Pr
         return 0;
       }
       if (subcommand === "show" && schemaName) {
-        const version = option(args, "version") ?? "0.1.0";
-        if (version !== "0.1.0" || !/^[a-z][a-z0-9/-]*(?:\.schema\.json)?$/u.test(schemaName) || schemaName.includes("..")) {
-          throw new UsageError("Only a named MASA 0.1.0 schema may be shown.");
+        const version = option(args, "version") ?? MASA_PROTOCOL_VERSION;
+        if (version !== MASA_PROTOCOL_VERSION || !/^[a-z][a-z0-9/-]*(?:\.schema\.json)?$/u.test(schemaName) || schemaName.includes("..")) {
+          throw new UsageError(`Only a named MASA ${MASA_PROTOCOL_VERSION} schema may be shown.`);
         }
         const schema = getEmbeddedSchema(schemaName);
         if (schema === undefined) throw new UsageError(`Unknown MASA schema ${schemaName}.`);

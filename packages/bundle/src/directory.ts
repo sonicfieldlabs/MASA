@@ -5,10 +5,11 @@ import {
   realpath
 } from "node:fs/promises";
 import { join, relative, resolve, sep } from "node:path";
-import type {
-  BundleManifest,
-  Diagnostic,
-  MatterRecord
+import {
+  MASA_PROTOCOL_VERSION,
+  type BundleManifest,
+  type Diagnostic,
+  type MatterRecord
 } from "@sonicfield/masa";
 import {
   consumeReadable,
@@ -386,7 +387,7 @@ export function verifyManifestSemantics(
     diagnostics.push(
       diagnostic(
         "MASA_BUNDLE_EVENT_LOG_DUPLICATE",
-        "A MASA 0.1.0 bundle may contain at most one Core event log.",
+        `A MASA ${MASA_PROTOCOL_VERSION} bundle may contain at most one Core event log.`,
         "/files"
       )
     );
