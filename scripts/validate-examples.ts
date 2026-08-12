@@ -26,6 +26,7 @@ const EXPECTED_INVALID: Readonly<Record<string, readonly string[]>> = {
   "failed-operation-with-output.masa.json": ["MASA_SCHEMA_INVALID"],
   "known-null-qualified-value.masa.json": ["MASA_SCHEMA_INVALID"],
   "measurement-missing-unit.masa.json": ["MASA_SCHEMA_INVALID"],
+  "observation-profile-missing-metadata.masa.json": ["MASA_PROFILE_MISMATCH"],
   "processing-missing-parent-relation.masa.json": ["MASA_DESCENDANT_RECEIPT", "MASA_PROFILE_MISMATCH"],
   "profile-mismatch.masa.json": ["MASA_PROFILE_MISMATCH"],
   "public-local-path.masa.json": ["MASA_PUBLIC_PATH"],

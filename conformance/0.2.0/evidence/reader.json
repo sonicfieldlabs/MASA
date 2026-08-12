@@ -1,0 +1,60 @@
+{
+  "class": "reader",
+  "diagnostics": [],
+  "extensions": {},
+  "fixtureManifestDigest": {
+    "algorithm": "sha-256",
+    "byteLength": 368877,
+    "digest": "d9c286e62c7dfee868780377fdb2f21715082bce61023f56e206e4939ca8c5a5",
+    "status": "verified",
+    "verifiedAt": "2026-08-12T00:29:18.018Z"
+  },
+  "id": "urn:uuid:10000000-0000-4000-8000-000000000001",
+  "implementation": {
+    "name": "MASA local TypeScript reference",
+    "version": "0.2.0"
+  },
+  "masaVersion": "0.2.0",
+  "migrationStatus": "not_tested",
+  "platform": {
+    "architecture": "arm64",
+    "os": "darwin",
+    "runtime": "node v22.22.3"
+  },
+  "profile": "core",
+  "runAt": "2026-08-12T00:29:18.018Z",
+  "status": "conformant",
+  "subject": "@sonicfield/masa workspace",
+  "suite": {
+    "name": "masa-typescript-reference-conformance",
+    "version": "0.2.0"
+  },
+  "tests": [
+    {
+      "diagnostics": [],
+      "id": "reader.valid-profile-matrix",
+      "status": "conformant"
+    },
+    {
+      "diagnostics": [],
+      "id": "reader.invalid-profile-matrix",
+      "status": "conformant"
+    },
+    {
+      "diagnostics": [],
+      "id": "reader.strict-json-and-extension-roundtrip",
+      "status": "conformant"
+    },
+    {
+      "diagnostics": [],
+      "id": "reader.directory-bundle",
+      "status": "conformant"
+    },
+    {
+      "diagnostics": [],
+      "id": "reader.deterministic-zip-roundtrip",
+      "status": "conformant"
+    }
+  ],
+  "type": "masa:ConformanceResult"
+}

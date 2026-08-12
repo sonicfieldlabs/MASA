@@ -2,6 +2,17 @@
 
 All material protocol and reference-tooling changes are recorded here. MASA uses semantic versioning; a tooling patch may advance without changing the normative protocol version when its record contracts remain compatible.
 
+## 0.2.0 - 2026-08-11
+
+Minor protocol and reference-tooling release.
+
+- Added the optional Observation profile, promoting `epistemicStatus`, `temporalCharacter`, and `signalKind` after independent use in Cosmoaudition System and GERM.
+- Kept value availability, source health, freshness, confidence, method, disclosure, and observation metadata as separate axes; a declared Observation profile requires all three new axes on every Observation.
+- Added RFC 0002, versioned 0.2.0 specification/schema/ontology/context/example/conformance resources, and an invalid fixture proving incomplete Observation metadata is refused.
+- Preserved every 0.1.0 normative resource and evidence snapshot unchanged. Migration creates a new attributable revision; it does not rewrite an earlier record in place.
+- Corrected conformance migration reporting for the second protocol line: 0.2.0 evidence says `not_tested` rather than claiming migration is not applicable.
+- Updated the TypeScript reference packages, CLI, MCP resources, capability catalog, and package artifacts to 0.2.0.
+
 ## 0.1.1 - 2026-08-09
 
 Patch release of the TypeScript reference implementation. The normative MASA protocol, schemas, capability-set format, profile directories, and record/request version fields remain `0.1.0`.

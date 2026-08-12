@@ -1,10 +1,10 @@
 # Project-agnostic MASA integration
 
-MASA 0.1.0 defines a protocol boundary, not an application object model. An implementation may use any language, storage system, audio engine, interface, or deployment model when its emitted artifacts satisfy the exact versioned schemas and semantic invariants.
+MASA 0.2.0 defines a protocol boundary, not an application object model. An implementation may use any language, storage system, audio engine, interface, or deployment model when its emitted artifacts satisfy the exact versioned schemas and semantic invariants.
 
 ## What an implementation adopts
 
-An implementation adopts only the profiles it can evidence. Every record adopts Core; audio, listening, analysis, transformation, generation, mapping, agent, and publication remain independent capability declarations. A conventional non-agentic script can therefore be a conforming Reader or Writer without implementing an agent host, audio engine, or public service.
+An implementation adopts only the profiles it can evidence. Every record adopts Core; audio, listening, analysis, transformation, generation, processing, observation, mapping, agent, and publication remain independent capability declarations. A conventional non-agentic script can therefore be a conforming Reader or Writer without implementing an agent host, audio engine, observation gateway, or public service.
 
 Core identifiers, qualified states, claims, receipts, policies, and lineage relations carry interoperable meaning. Namespaced register and scale values let another field or community add classifications without changing the Core vocabulary. Unknown extension payloads survive local Reader and Writer round trips, while public projection excludes them unless the exact namespace and shape have been reviewed.
 

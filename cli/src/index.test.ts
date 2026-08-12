@@ -56,7 +56,7 @@ describe("MASA CLI", () => {
   it("applies the public-safety audit to publisher conformance", async () => {
     const recordPath = join(
       import.meta.dirname,
-      "../../examples/0.1.0/invalid/public-local-path.masa.json",
+      "../../examples/0.2.0/invalid/public-local-path.masa.json",
     );
     const result = capture();
 

@@ -23,10 +23,10 @@ function fixture(path: string): unknown {
 describe("offline MASA validation", () => {
   it("accepts the canonical minimal and publication fixtures", () => {
     const minimal = validateMatterRecord(
-      fixture("examples/0.1.0/valid/minimal-record.masa.json"),
+      fixture("examples/0.2.0/valid/minimal-record.masa.json"),
     );
     const publication = auditPublicRecord(
-      fixture("examples/0.1.0/valid/publication.masa.json"),
+      fixture("examples/0.2.0/valid/publication.masa.json"),
     );
 
     expect(minimal).toMatchObject({ valid: true, diagnostics: [] });
@@ -35,23 +35,23 @@ describe("offline MASA validation", () => {
 
   it("reports stable semantic diagnostics for unresolved references and cycles", () => {
     const dangling = validateMatterRecord(
-      fixture("examples/0.1.0/invalid/dangling-reference.masa.json"),
+      fixture("examples/0.2.0/invalid/dangling-reference.masa.json"),
     );
     const cyclic = validateMatterRecord(
-      fixture("examples/0.1.0/invalid/derivation-cycle.masa.json"),
+      fixture("examples/0.2.0/invalid/derivation-cycle.masa.json"),
     );
 
     expect(dangling.valid).toBe(false);
     expect(dangling.diagnostics.map(({ code }) => code)).toContain("MASA_UNRESOLVED_REF");
     expect(cyclic.valid).toBe(false);
     expect(cyclic.diagnostics.map(({ code }) => code)).toContain("MASA_DERIVATION_CYCLE");
-    expect(validateMatterRecord(fixture("examples/0.1.0/invalid/dangling-reference.masa.json")))
+    expect(validateMatterRecord(fixture("examples/0.2.0/invalid/dangling-reference.masa.json")))
       .toEqual(dangling);
   });
 
   it("blocks local paths from public records", () => {
     const result = auditPublicRecord(
-      fixture("examples/0.1.0/invalid/public-local-path.masa.json"),
+      fixture("examples/0.2.0/invalid/public-local-path.masa.json"),
     );
 
     expect(result.valid).toBe(false);
@@ -62,7 +62,7 @@ describe("offline MASA validation", () => {
 
   it("enforces every declared profile during public audit", () => {
     const record = structuredClone(
-      fixture("examples/0.1.0/valid/publication.masa.json"),
+      fixture("examples/0.2.0/valid/publication.masa.json"),
     ) as any;
     record.profiles.push("audio");
 
@@ -72,8 +72,21 @@ describe("offline MASA validation", () => {
     expect(result.diagnostics.map(({ code }) => code)).toContain("MASA_PROFILE_MISMATCH");
   });
 
+  it("requires complete epistemic axes only when the Observation profile is declared", () => {
+    const valid = validateMatterRecord(
+      fixture("examples/0.2.0/valid/mapping.masa.json"),
+    );
+    const incomplete = validateMatterRecord(
+      fixture("examples/0.2.0/invalid/observation-profile-missing-metadata.masa.json"),
+    );
+
+    expect(valid.valid).toBe(true);
+    expect(incomplete.valid).toBe(false);
+    expect(incomplete.diagnostics.map(({ code }) => code)).toContain("MASA_PROFILE_MISMATCH");
+  });
+
   it("detects public-safety bypass forms", () => {
-    const base = fixture("examples/0.1.0/valid/publication.masa.json");
+    const base = fixture("examples/0.2.0/valid/publication.masa.json");
     const cases: Array<{ mutate(record: any): void; code: string }> = [
       {
         mutate: (record) => {
@@ -226,7 +239,7 @@ describe("offline MASA validation", () => {
 
   it("distinguishes valid publication JSON Pointers from local paths", () => {
     const record = structuredClone(
-      fixture("examples/0.1.0/valid/publication.masa.json"),
+      fixture("examples/0.2.0/valid/publication.masa.json"),
     ) as any;
     record.publication.omissions = [{
       pointer: "/representations/0/locator",
@@ -250,13 +263,13 @@ describe("offline MASA validation", () => {
   });
 
   it("validates the generated capability catalog and embedded schemas", () => {
-    const catalog = fixture("capabilities/0.1.0/reference.json") as {
+    const catalog = fixture("capabilities/0.2.0/reference.json") as {
       capabilities: unknown[];
     };
 
     expect(validateCapabilitySet(catalog).valid).toBe(true);
     expect(validateCapability(catalog.capabilities[0]).valid).toBe(true);
-    expect(validateDocument("matterRecord", fixture("examples/0.1.0/valid/minimal-record.masa.json")).valid)
+    expect(validateDocument("matterRecord", fixture("examples/0.2.0/valid/minimal-record.masa.json")).valid)
       .toBe(true);
     expect(validateDocument("unknown-schema", {}).diagnostics[0]?.code).toBe("MASA_SCHEMA_UNKNOWN");
     expect(listEmbeddedSchemas().some(({ fileName }) => fileName === "tools/trace-lineage-input.schema.json"))
@@ -266,35 +279,35 @@ describe("offline MASA validation", () => {
 
   it("keeps qualified deletion distinct and rejects the assertion-null family", () => {
     const deleted = validateMatterRecord(
-      fixture("examples/0.1.0/valid/deleted-state.masa.json"),
+      fixture("examples/0.2.0/valid/deleted-state.masa.json"),
     );
     expect(deleted.valid).toBe(true);
 
     const knownNull = validateMatterRecord(
-      fixture("examples/0.1.0/invalid/known-null-qualified-value.masa.json"),
+      fixture("examples/0.2.0/invalid/known-null-qualified-value.masa.json"),
     );
     expect(knownNull.valid).toBe(false);
 
     const nullMeasurement = structuredClone(
-      fixture("examples/0.1.0/valid/listening-analysis-audio.masa.json"),
+      fixture("examples/0.2.0/valid/listening-analysis-audio.masa.json"),
     ) as any;
     nullMeasurement.measurements[0].value = null;
     expect(validateMatterRecord(nullMeasurement).valid).toBe(false);
 
     const nullClaim = structuredClone(
-      fixture("examples/0.1.0/valid/listening-analysis-audio.masa.json"),
+      fixture("examples/0.2.0/valid/listening-analysis-audio.masa.json"),
     ) as any;
     nullClaim.claims[0].content = null;
     expect(validateMatterRecord(nullClaim).valid).toBe(false);
 
     const nullClaimValue = structuredClone(
-      fixture("examples/0.1.0/valid/listening-analysis-audio.masa.json"),
+      fixture("examples/0.2.0/valid/listening-analysis-audio.masa.json"),
     ) as any;
     nullClaimValue.claims[0].value = null;
     expect(validateMatterRecord(nullClaimValue).valid).toBe(false);
 
     const nullContext = structuredClone(
-      fixture("examples/0.1.0/valid/minimal-record.masa.json"),
+      fixture("examples/0.2.0/valid/minimal-record.masa.json"),
     ) as any;
     nullContext.contexts.push({
       id: "urn:uuid:ffffffff-ffff-4fff-8fff-fffffffffff1",
@@ -311,7 +324,7 @@ describe("offline MASA validation", () => {
     expect(validateMatterRecord(nullContext).valid).toBe(false);
 
     const nullThreshold = structuredClone(
-      fixture("examples/0.1.0/valid/listening-analysis-audio.masa.json"),
+      fixture("examples/0.2.0/valid/listening-analysis-audio.masa.json"),
     ) as any;
     nullThreshold.apertures[0].thresholds.push({
       name: "Regression threshold",
@@ -328,13 +341,13 @@ describe("offline MASA validation", () => {
     expect(validateMatterRecord(nullThreshold).valid).toBe(false);
 
     const nullSeed = structuredClone(
-      fixture("examples/0.1.0/valid/generation.masa.json"),
+      fixture("examples/0.2.0/valid/generation.masa.json"),
     ) as any;
     nullSeed.history.events[0].determinism.seed = null;
     expect(validateMatterRecord(nullSeed).valid).toBe(false);
 
     const missingReceipt = structuredClone(
-      fixture("examples/0.1.0/valid/deleted-state.masa.json"),
+      fixture("examples/0.2.0/valid/deleted-state.masa.json"),
     ) as any;
     missingReceipt.representations[0].locator.receiptRefs = ["urn:uuid:ffffffff-ffff-4fff-8fff-ffffffffffff"];
     expect(validateMatterRecord(missingReceipt).diagnostics.map(({ code }) => code))
@@ -343,21 +356,21 @@ describe("offline MASA validation", () => {
 
   it("checks typed references, interval order, and namespaced classification", () => {
     const wrongCreator = structuredClone(
-      fixture("examples/0.1.0/valid/minimal-record.masa.json"),
+      fixture("examples/0.2.0/valid/minimal-record.masa.json"),
     ) as any;
     wrongCreator.createdBy = wrongCreator.representations[0].id;
     expect(validateMatterRecord(wrongCreator).diagnostics.map(({ code }) => code))
       .toContain("MASA_REF_TYPE");
 
     const reversedWindow = structuredClone(
-      fixture("examples/0.1.0/valid/listening-analysis-audio.masa.json"),
+      fixture("examples/0.2.0/valid/listening-analysis-audio.masa.json"),
     ) as any;
     reversedWindow.measurements[0].window.end = -1;
     expect(validateMatterRecord(reversedWindow).diagnostics.map(({ code }) => code))
       .toContain("MASA_WINDOW_ORDER");
 
     const extended = structuredClone(
-      fixture("examples/0.1.0/valid/minimal-record.masa.json"),
+      fixture("examples/0.2.0/valid/minimal-record.masa.json"),
     ) as any;
     extended.registers.push("example:field-practice");
     extended.scales.push("example:installation-cycle");
@@ -366,7 +379,7 @@ describe("offline MASA validation", () => {
 
   it("audits a decorrelated projection produced by the reference pipeline", () => {
     const source = structuredClone(
-      fixture("examples/0.1.0/valid/publication.masa.json"),
+      fixture("examples/0.2.0/valid/publication.masa.json"),
     ) as any;
     source.publication.publicRecordId = "urn:uuid:99999999-9999-4999-8999-999999999999";
 
@@ -422,7 +435,7 @@ describe("offline MASA validation", () => {
 
   it("does not flag schema-valid leap-second timestamps as temporal disorder", () => {
     const record = structuredClone(
-      fixture("examples/0.1.0/valid/mapping.masa.json"),
+      fixture("examples/0.2.0/valid/mapping.masa.json"),
     ) as any;
     record.sources[0].freshness = {
       status: "stale",
@@ -437,7 +450,7 @@ describe("offline MASA validation", () => {
 
   it("accepts inverse lineage syntax and verifies publication permission rules", () => {
     const inverse = structuredClone(
-      fixture("examples/0.1.0/valid/transformation.masa.json"),
+      fixture("examples/0.2.0/valid/transformation.masa.json"),
     ) as any;
     const relation = inverse.relations[0];
     relation.predicate = "masa:derivation-of";
@@ -445,7 +458,7 @@ describe("offline MASA validation", () => {
     expect(validateMatterRecord(inverse).valid).toBe(true);
 
     const unsupportedPermission = structuredClone(
-      fixture("examples/0.1.0/valid/publication.masa.json"),
+      fixture("examples/0.2.0/valid/publication.masa.json"),
     ) as any;
     unsupportedPermission.policies[0].rules[0].actions = ["read"];
     const audit = auditPublicRecord(unsupportedPermission);
