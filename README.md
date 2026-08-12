@@ -49,7 +49,7 @@ See [`docs/project-agnostic-integration.md`](docs/project-agnostic-integration.m
 
 ## Local conformance evidence
 
-The reference implementation records separate evidence for the `reader`, `writer`, `transformer`, `agent-host`, and `publisher` classes in [`conformance/0.2.0/evidence`](conformance/0.2.0/evidence). The current local run reports all five classes conformant on Node.js 22.22.3 for macOS arm64 against fixture-manifest digest `d9c286e62c7dfee868780377fdb2f21715082bce61023f56e206e4939ca8c5a5`. The digest is refreshed from the examples, specification, capability catalog, schemas, ontology registries, JSON-LD context, and executable conformance runner whenever evidence is intentionally recorded.
+The reference implementation records separate evidence for the `reader`, `writer`, `transformer`, `agent-host`, and `publisher` classes in [`conformance/0.2.0/evidence`](conformance/0.2.0/evidence). The current local run reports all five classes conformant on Node.js 22.22.3 for macOS arm64 against fixture-manifest digest `456f1fd3c5c9b4905dca5456ef3179ac651282a2885eeb6aac2b5997cc254da4`. The digest is refreshed from the examples, specification, capability catalog, schemas, ontology registries, JSON-LD context, and executable conformance runner whenever evidence is intentionally recorded.
 
 Run `pnpm check` to regenerate derived code and verify conformance on the current machine. Run `pnpm conformance:evidence` only when intentionally recording a new local evidence snapshot. Conformance is always specific to an implementation version, MASA version, profile, class, platform, and exact fixture set; it is not a universal certification.
 
