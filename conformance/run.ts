@@ -132,7 +132,7 @@ tests.push(await test("reader.valid-profile-matrix", async () => {
 
 tests.push(await test("reader.invalid-profile-matrix", async () => {
   const files = await masaRecordFiles(invalidDirectory);
-  assert(files.length === 10, "Invalid fixture matrix does not match the expected count of 10.");
+  assert(files.length === 11, "Invalid fixture matrix does not match the expected count of 11.");
   for (const path of files) {
     let valid = false;
     try {
@@ -378,7 +378,7 @@ const evidence = classes.map((className, index) => {
     profile: classProfiles[className],
     class: className,
     status: failed.length === 0 ? "conformant" : "failed",
-    migrationStatus: "not_applicable",
+    migrationStatus: "not_tested",
     runAt,
     tests: selected,
     fixtureManifestDigest: {

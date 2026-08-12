@@ -7,7 +7,7 @@ import { MASA_PROTOCOL_VERSION, SCHEMA_ID_PREFIX, VOCAB_NAMESPACE } from "./cano
 
 const root = resolve(import.meta.dirname, "..");
 const schemaRoot = join(root, "schemas", MASA_PROTOCOL_VERSION);
-const EXPECTED_SCHEMA_COUNT = 29;
+const EXPECTED_SCHEMA_COUNT = 30;
 
 async function filesBelow(directory: string): Promise<string[]> {
   const entries = await readdir(directory, { withFileTypes: true, recursive: true });

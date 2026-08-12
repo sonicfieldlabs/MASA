@@ -7,7 +7,7 @@ describe("indexRecord", () => {
   it("indexes entities, nested policy rules, events, and duplicate identities", () => {
     const record = {
       id: "urn:uuid:record",
-      masaVersion: "0.1.0",
+      masaVersion: "0.2.0",
       revision: 1,
       profiles: ["core"],
       disclosure: "private",

@@ -2,11 +2,11 @@
 
 **MASA** is a project-agnostic Sound Matter Aware protocol. It provides a local-first, language-neutral contract for systems that need to describe, listen to, measure, transform, granulate, dissect, generate, map, relate, govern, and exchange sound as matter without confusing an audio file, a physical event, a perceptual account, or a computational claim. Conformance never depends on any other repository.
 
-Protocol version `0.1.0` is the first public specification, MIT-licensed and open to any project. Its normative sources are the specification, JSON Schemas, ontology registries, and conformance fixtures in this repository. The current TypeScript reference-tooling release is `0.1.1`; tooling patches do not rename or silently revise the normative `0.1.0` resources.
+Protocol version `0.2.0` is the current public specification, MIT-licensed and open to any project. It adds a shared Observation profile while preserving the versioned `0.1.0` resources unchanged. Its normative sources are the specification, JSON Schemas, ontology registries, and conformance fixtures in this repository. The current TypeScript reference-tooling release is `0.2.0`.
 
 ## What is included
 
-- a compact Core plus Audio, Listening, Analysis, Transformation, Generation, Processing, Mapping, Agent, and Publication profiles;
+- a compact Core plus Audio, Listening, Analysis, Transformation, Generation, Processing, Observation, Mapping, Agent, and Publication profiles;
 - JSON Schema 2020-12 contracts with stable versioned identifiers;
 - an engine-neutral processing-request contract for granular, spectral, and time-pitch operations, with the granular lexicon carried as attributed vocabulary;
 - provenance-aware terminology and relation registries;
@@ -29,11 +29,11 @@ Requirements: Node.js 22.20 or newer and pnpm 10.32.1.
 ```bash
 pnpm install
 pnpm check
-pnpm masa -- validate examples/0.1.0/valid/minimal-record.masa.json
-pnpm masa -- inspect examples/0.1.0/bundles/transformation.masa
-pnpm masa -- lineage examples/0.1.0/valid/processing.masa.json urn:uuid:00000000-0000-4000-8000-000000000d02
+pnpm masa -- validate examples/0.2.0/valid/minimal-record.masa.json
+pnpm masa -- inspect examples/0.2.0/bundles/transformation.masa
+pnpm masa -- lineage examples/0.2.0/valid/processing.masa.json urn:uuid:00000000-0000-4000-8000-000000000d02
 pnpm masa -- process template granulate
-pnpm masa -- conformance reader examples/0.1.0/valid/minimal-record.masa.json
+pnpm masa -- conformance reader examples/0.2.0/valid/minimal-record.masa.json
 ```
 
 Start the local MCP server over stdio:
@@ -49,7 +49,7 @@ See [`docs/project-agnostic-integration.md`](docs/project-agnostic-integration.m
 
 ## Local conformance evidence
 
-The reference implementation records separate evidence for the `reader`, `writer`, `transformer`, `agent-host`, and `publisher` classes in [`conformance/0.1.0/evidence`](conformance/0.1.0/evidence). The current local run reports all five classes conformant on Node.js 22.22.3 for macOS arm64 against fixture-manifest digest `7f57b4870c2414936114ce906258e1d4816be340d1c3c591cb95eec80bc9cdea`. The digest is refreshed from the examples, specification, capability catalog, schemas, ontology registries, JSON-LD context, and executable conformance runner whenever evidence is intentionally recorded.
+The reference implementation records separate evidence for the `reader`, `writer`, `transformer`, `agent-host`, and `publisher` classes in [`conformance/0.2.0/evidence`](conformance/0.2.0/evidence). The current local run reports all five classes conformant on Node.js 22.22.3 for macOS arm64 against fixture-manifest digest `456f1fd3c5c9b4905dca5456ef3179ac651282a2885eeb6aac2b5997cc254da4`. The digest is refreshed from the examples, specification, capability catalog, schemas, ontology registries, JSON-LD context, and executable conformance runner whenever evidence is intentionally recorded.
 
 Run `pnpm check` to regenerate derived code and verify conformance on the current machine. Run `pnpm conformance:evidence` only when intentionally recording a new local evidence snapshot. Conformance is always specific to an implementation version, MASA version, profile, class, platform, and exact fixture set; it is not a universal certification.
 

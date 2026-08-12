@@ -19,7 +19,7 @@ spec + ontology + schemas
 
 ## Authority boundaries
 
-- `spec/`, `schemas/`, `ontology/`, and `contexts/` define protocol 0.1.0.
+- `spec/`, `schemas/`, `ontology/`, and `contexts/` define the current protocol 0.2.0 while retaining prior versioned resources.
 - `packages/core` contains pure types, identity helpers, indexing, deterministic JSON, and projection helpers. It performs no filesystem or network access.
 - `packages/validator` registers all schemas locally in Ajv 2020 and adds reference, lineage, profile, policy, and disclosure invariants. It never dereferences a URI.
 - `packages/bundle` is the only package that reads or writes bundle paths. It streams ZIP entries, imposes limits, verifies the manifest, and promotes outputs only after complete verification.

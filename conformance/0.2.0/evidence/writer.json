@@ -1,0 +1,45 @@
+{
+  "class": "writer",
+  "diagnostics": [],
+  "extensions": {},
+  "fixtureManifestDigest": {
+    "algorithm": "sha-256",
+    "byteLength": 368867,
+    "digest": "456f1fd3c5c9b4905dca5456ef3179ac651282a2885eeb6aac2b5997cc254da4",
+    "status": "verified",
+    "verifiedAt": "2026-08-12T00:36:14.673Z"
+  },
+  "id": "urn:uuid:10000000-0000-4000-8000-000000000002",
+  "implementation": {
+    "name": "MASA local TypeScript reference",
+    "version": "0.2.0"
+  },
+  "masaVersion": "0.2.0",
+  "migrationStatus": "not_tested",
+  "platform": {
+    "architecture": "arm64",
+    "os": "darwin",
+    "runtime": "node v22.22.3"
+  },
+  "profile": "core",
+  "runAt": "2026-08-12T00:36:14.673Z",
+  "status": "conformant",
+  "subject": "@sonicfield/masa workspace",
+  "suite": {
+    "name": "masa-typescript-reference-conformance",
+    "version": "0.2.0"
+  },
+  "tests": [
+    {
+      "diagnostics": [],
+      "id": "reader.valid-profile-matrix",
+      "status": "conformant"
+    },
+    {
+      "diagnostics": [],
+      "id": "writer.identities-profiles-and-receipts",
+      "status": "conformant"
+    }
+  ],
+  "type": "masa:ConformanceResult"
+}

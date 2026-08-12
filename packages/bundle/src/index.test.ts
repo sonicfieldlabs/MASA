@@ -31,11 +31,11 @@ import {
 const repositoryRoot = fileURLToPath(new URL("../../../", import.meta.url));
 const minimalRecordPath = join(
   repositoryRoot,
-  "examples/0.1.0/valid/minimal-record.masa.json"
+  "examples/0.2.0/valid/minimal-record.masa.json"
 );
 const transformationRecordPath = join(
   repositoryRoot,
-  "examples/0.1.0/valid/transformation.masa.json"
+  "examples/0.2.0/valid/transformation.masa.json"
 );
 const temporaryRoots: string[] = [];
 
@@ -321,8 +321,8 @@ async function createBundleDirectory(
     .sort((left, right) => (left.path < right.path ? -1 : left.path > right.path ? 1 : 0));
   const manifest = {
     manifestType: "masa-bundle",
-    manifestVersion: "0.1.0",
-    masaVersion: "0.1.0",
+    manifestVersion: "0.2.0",
+    masaVersion: "0.2.0",
     id: "urn:uuid:10000000-0000-4000-8000-000000000001",
     createdAt: "2026-07-27T12:00:00Z",
     createdBy: record.createdBy,

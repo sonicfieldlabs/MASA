@@ -14,6 +14,7 @@ This repository contains the normative MASA Sound Matter Aware protocol and its 
 
 - Preserve source, representation, claim, operation, policy, and lineage as distinct objects.
 - Keep claim kind, actor, confidence, source health, freshness, and disclosure separate.
+- Keep observation epistemic status, temporal character, signal kind, value availability, source health, freshness, and disclosure separate.
 - Keep unknown, withheld, unavailable, deleted, and not-applicable states distinct.
 - Never mutate or replace an imported representation under the same identifier after consequential transformation.
 - Every descendant has a parent relation and an operation receipt.

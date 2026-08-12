@@ -344,7 +344,7 @@ generation.history.events = [
 const mapping = clone();
 retarget(mapping, "urn:uuid:00000000-0000-4000-8000-000000000005");
 mapping.title = "Stale observation skipped explicitly";
-mapping.profiles = ["core", "mapping"];
+mapping.profiles = ["core", "observation", "mapping"];
 mapping.policies[0].rules[0].actions.push("map");
 mapping.sources = [
   {
@@ -376,6 +376,9 @@ mapping.observations = [
     method: method("offline fixture observation"),
     health: mapping.sources[0].health,
     freshness: mapping.sources[0].freshness,
+    epistemicStatus: "reported",
+    temporalCharacter: "aggregate",
+    signalKind: "observation",
     disclosure: "private",
     extensions: {}
   }
@@ -736,6 +739,14 @@ await save(invalidDirectory, "failed-operation-with-output.masa.json", failedOut
 const profileMismatch = clone();
 profileMismatch.profiles.push("audio");
 await save(invalidDirectory, "profile-mismatch.masa.json", profileMismatch);
+
+const observationProfileMissingMetadata = structuredClone(mapping) as JsonObject;
+delete observationProfileMissingMetadata.observations[0].epistemicStatus;
+await save(
+  invalidDirectory,
+  "observation-profile-missing-metadata.masa.json",
+  observationProfileMissingMetadata
+);
 
 const duplicateId = clone();
 duplicateId.representations[0].id = duplicateId.actors[0].id;

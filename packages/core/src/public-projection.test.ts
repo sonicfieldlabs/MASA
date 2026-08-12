@@ -15,7 +15,7 @@ const PUBLIC_ID = "urn:uuid:99999999-9999-4999-8999-999999999999";
 
 function publicationFixture(): Record<string, unknown> {
   return JSON.parse(
-    readFileSync(new URL("../../../examples/0.1.0/valid/publication.masa.json", import.meta.url), "utf8"),
+    readFileSync(new URL("../../../examples/0.2.0/valid/publication.masa.json", import.meta.url), "utf8"),
   ) as Record<string, unknown>;
 }
 

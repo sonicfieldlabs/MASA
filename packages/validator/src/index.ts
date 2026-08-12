@@ -35,6 +35,7 @@ const PROFILE_SCHEMA_IDS: Readonly<Record<string, string>> = {
   transformation: SCHEMA_IDS.profileTransformation,
   generation: SCHEMA_IDS.profileGeneration,
   processing: SCHEMA_IDS.profileProcessing,
+  observation: SCHEMA_IDS.profileObservation,
   mapping: SCHEMA_IDS.profileMapping,
   agent: SCHEMA_IDS.profileAgent,
   publication: SCHEMA_IDS.profilePublication,

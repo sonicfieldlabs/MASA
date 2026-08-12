@@ -1,6 +1,6 @@
 # Sound matter processing
 
-MASA 0.1.0 carries a Processing profile so that agentic and conventional workflows can command granular, spectral, and time-pitch work on sound matter — granulation, extraction of bands, strata, or partials, reduction, fragmentation, time-stretching, and pitch-shifting — while every operation stays contracted, authorized, and accounted. The reference implementation performs no digital signal processing; engines are external and named per receipt.
+MASA 0.2.0 carries a Processing profile so that agentic and conventional workflows can command granular, spectral, and time-pitch work on sound matter — granulation, extraction of bands, strata, or partials, reduction, fragmentation, time-stretching, and pitch-shifting — while every operation stays contracted, authorized, and accounted. The reference implementation performs no digital signal processing; engines are external and named per receipt.
 
 ## The flow
 
