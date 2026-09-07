@@ -35,3 +35,6 @@ An adapter document may explain one repository's mapping to MASA, but an adapter
 ## Portable package boundary
 
 The TypeScript packages are local reference implementations. Their packed artifacts contain compiled code and embedded protocol resources only. The CLI and MCP server do not assume that `spec/`, `schemas/`, or `capabilities/` exists in a parent repository after installation. Canonical language-neutral files under this repository's versioned directories remain authoritative over packaged conveniences.
+
+For sample-rate conversion, playback-rate changes, frequency translation, and
+listening evidence boundaries, see [processing integration](processing-integration.md).
