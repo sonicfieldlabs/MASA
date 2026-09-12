@@ -4118,6 +4118,7 @@ export const embeddedSchemas: readonly EmbeddedSchema[] = [
         "operationType": {
           "type": "string",
           "enum": [
+            "matter.derive",
             "matter.granulate",
             "matter.extract",
             "matter.reduce",
@@ -4929,6 +4930,7 @@ export const embeddedSchemas: readonly EmbeddedSchema[] = [
               "properties": {
                 "operationType": {
                   "enum": [
+                    "matter.derive",
                     "matter.granulate",
                     "matter.extract",
                     "matter.reduce",

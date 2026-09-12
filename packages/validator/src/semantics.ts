@@ -14,6 +14,7 @@ import {
 import { diagnostic } from "./diagnostic.js";
 
 const PROCESSING_OPERATIONS = new Set([
+  "matter.derive",
   "matter.granulate",
   "matter.extract",
   "matter.reduce",
