@@ -211,6 +211,18 @@ tests.push(await test("transformer.processing-lineage", async () => {
   );
 }));
 
+tests.push(await test("transformer.causal-preservation-matrix", async () => {
+  const cases = JSON.parse(await readFile(join(examples, "lineage-cases.json"), "utf8")) as
+    Array<{ name: string; valid: boolean; codes: string[]; record: MatterRecord }>;
+  for (const scenario of cases) {
+    const result = validateMatterRecord(scenario.record);
+    assert(result.valid === scenario.valid, `Unexpected validity for ${scenario.name}`);
+    for (const code of scenario.codes) {
+      assert(result.diagnostics.some(d => d.code === code), `Missing ${code} for ${scenario.name}`);
+    }
+  }
+}));
+
 tests.push(await test("transformer.lineage-and-failure", async () => {
   const transformed = await record(join(validDirectory, "transformation.masa.json"));
   assert(validateMatterRecord(transformed).valid, "Transformation fixture failed validation.");
@@ -338,6 +350,7 @@ const classTests: Readonly<Record<ConformanceClass, readonly string[]>> = {
     "reader.directory-bundle",
     "reader.deterministic-zip-roundtrip",
     "transformer.lineage-and-failure",
+    "transformer.causal-preservation-matrix",
     "transformer.processing-lineage"
   ],
   "agent-host": ["agent-host.capabilities-and-record", "agent-host.mcp-stdio"],

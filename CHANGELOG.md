@@ -2,6 +2,15 @@
 
 All material protocol and reference-tooling changes are recorded here. MASA uses semantic versioning; a tooling patch may advance without changing the normative protocol version when its record contracts remain compatible.
 
+## 0.2.1 - unreleased
+
+Reference-tooling validation erratum for MASA 0.2.0. Record versions and schema identifiers remain 0.2.0; no conforming record needs re-versioning. Previously accepted fabricated lineage and incomplete completed transformations contradicted the existing written requirements and are now rejected. The 0.1.0 resources and historical evidence are preserved.
+
+- Bind every descendant relation to the generating receipt's actual parent input, output, effect and completed/partial outcome, in both predicate directions.
+- Trigger completed preservation/output requirements by status and operation identity, and check every relevant event.
+- Apply causal checks to resolved external event logs using compact closure summaries; standalone external-history validation remains explicitly limited.
+- Add a shared adversarial conformance matrix, regenerate canonical artifacts, and qualify newly packed 0.2.1 tooling before consumer adoption. No public tag or release is claimed.
+
 ## 0.2.0 - 2026-08-11
 
 Minor protocol and reference-tooling release.

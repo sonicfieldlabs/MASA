@@ -8,6 +8,7 @@ import {
   type OperationReceipt
 } from "@sonicfield/masa";
 import {
+  type LineageReceipt,
   validateOperationReceipt,
   validateMatterRecord
 } from "@sonicfield/masa-validator";
@@ -91,10 +92,7 @@ export function validateRecordBuffer(buffer: Buffer, instancePath: string): Reco
 }
 
 /** The bounded slice of a receipt retained for cross-file closure checks. */
-export interface ReceiptClosureView {
-  readonly id: string;
-  readonly recordId: string;
-}
+export type ReceiptClosureView = LineageReceipt;
 
 export class NdjsonReceiptValidator {
   readonly diagnostics: Diagnostic[] = [];
@@ -205,7 +203,8 @@ export class NdjsonReceiptValidator {
     if (!result.valid || result.value === undefined) {
       return;
     }
-    this.receipts.push({ id: result.value.id, recordId: result.value.recordId });
+    const { id, recordId, inputs, outputs, effectClass, finalStatus } = result.value;
+    this.receipts.push({ id, recordId, inputs, outputs, effectClass, finalStatus });
     this.#validateOrder(result.value, path);
   }
 

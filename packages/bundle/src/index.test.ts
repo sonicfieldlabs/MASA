@@ -275,6 +275,29 @@ describe("external event-log closure", () => {
   });
 });
 
+describe("external causal and preservation matrix", async () => {
+  const cases = JSON.parse(await readFile(join(repositoryRoot, "examples/0.2.0/lineage-cases.json"), "utf8")) as
+    Array<{ name: string; valid: boolean; record: any }>;
+  for (const scenario of cases) {
+    it(scenario.name + " in directory and ZIP", async () => {
+      const root = await temporaryRoot();
+      const record = structuredClone(scenario.record);
+      const events = record.history.events;
+      record.history = { mode: "external", href: "events.ndjson", eventIds: events.map((e: OperationReceipt) => e.id) };
+      const directory = await createBundleDirectory(root, "external.masa", { record, events });
+      const inspected = await inspectBundle(directory);
+      expect(inspected.valid, JSON.stringify(inspected.diagnostics)).toBe(scenario.valid);
+      const archive = join(root, "external.zip");
+      await writeRawZip(archive, await Promise.all(
+        ["manifest.json", "records/minimal.masa.json", "events.ndjson"].map(async path =>
+          ({ path, data: await readFile(join(directory, path)) })),
+      ));
+      const zipped = await inspectBundle(archive);
+      expect(zipped.valid, JSON.stringify(zipped.diagnostics)).toBe(scenario.valid);
+    });
+  }
+});
+
 async function temporaryRoot(): Promise<string> {
   const value = await mkdtemp(join(tmpdir(), "masa-bundle-test-"));
   temporaryRoots.push(value);

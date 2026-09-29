@@ -1,6 +1,6 @@
 {
   "name": "@sonicfield/masa-workspace",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "license": "MIT",
   "description": "Local-first reference repository for the MASA Sound Matter Aware protocol",
@@ -10,7 +10,7 @@
     "node": ">=22.20"
   },
   "scripts": {
-    "generate": "tsx scripts/generate-examples.ts && tsx scripts/generate-capabilities.ts && tsx scripts/generate-artifacts.ts",
+    "generate": "tsx scripts/generate-examples.ts && tsx scripts/generate-lineage-cases.ts && tsx scripts/generate-capabilities.ts && tsx scripts/generate-artifacts.ts",
     "build": "pnpm generate && tsc -b",
     "typecheck": "pnpm generate && tsc -b --pretty false",
     "test": "vitest run",

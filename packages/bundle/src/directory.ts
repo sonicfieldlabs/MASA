@@ -1,3 +1,4 @@
+import { auditDescendantReceipts } from "@sonicfield/masa-validator";
 import { createReadStream } from "node:fs";
 import {
   lstat,
@@ -50,6 +51,7 @@ interface DirectoryEntry {
  */
 export interface RecordClosureView {
   readonly id: string;
+  readonly lineage?: Record<string, unknown>;
   readonly externalHistory?: {
     readonly href: string;
     readonly eventIds: readonly string[];
@@ -61,7 +63,14 @@ export function recordClosureView(record: MatterRecord): RecordClosureView {
     | { readonly mode: "embedded" }
     | { readonly mode: "external"; readonly href: string; readonly eventIds: readonly string[] };
   if (history.mode === "external") {
-    return { id: record.id, externalHistory: { href: history.href, eventIds: history.eventIds } };
+    return {
+      id: record.id, externalHistory: { href: history.href, eventIds: history.eventIds },
+      lineage: {
+        representations: record.representations.map(({ id }) => ({ id })),
+        relations: record.relations.map(({ subject, predicate, object, operationRef }) =>
+          ({ subject, predicate, object, operationRef })),
+      },
+    };
   }
   return { id: record.id };
 }
@@ -479,7 +488,15 @@ export function verifyExternalHistoryClosure(
   for (const [recordIndex, reference] of view.records.entries()) {
     const record = recordsByPath.get(reference.path);
     const history = record?.externalHistory;
-    if (history === undefined) continue;
+    if (record === undefined || history === undefined) continue;
+    if (record.lineage !== undefined) {
+      const resolved = new Map(history.eventIds.flatMap((id) => {
+        const receipt = receiptById.get(id);
+        return receipt === undefined ? [] : [[id, receipt] as const];
+      }));
+      diagnostics.push(...auditDescendantReceipts(record.lineage, resolved, new Set(history.eventIds))
+        .map((item) => ({ ...item, instancePath: `/records/${recordIndex}${item.instancePath}` })));
+    }
     if (!hasEventLog) {
       diagnostics.push(
         diagnostic(

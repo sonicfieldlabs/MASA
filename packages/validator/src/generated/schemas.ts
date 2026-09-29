@@ -5672,6 +5672,14 @@ export const embeddedSchemas: readonly EmbeddedSchema[] = [
                     "events": {
                       "contains": {
                         "$ref": "#/$defs/TransformationOperation"
+                      },
+                      "items": {
+                        "if": {
+                          "$ref": "#/$defs/TransformationType"
+                        },
+                        "then": {
+                          "$ref": "#/$defs/TransformationOperation"
+                        }
                       }
                     }
                   }
@@ -5714,7 +5722,7 @@ export const embeddedSchemas: readonly EmbeddedSchema[] = [
                   },
                   "events": {
                     "contains": {
-                      "$ref": "#/$defs/CompletedTransformation"
+                      "$ref": "#/$defs/CompletedKind"
                     }
                   }
                 }
@@ -5765,25 +5773,21 @@ export const embeddedSchemas: readonly EmbeddedSchema[] = [
               "$ref": "definitions.schema.json#/$defs/OperationReceipt"
             },
             {
-              "properties": {
-                "operationType": {
-                  "enum": [
-                    "matter.segment",
-                    "matter.isolate",
-                    "matter.transform",
-                    "matter.sculpt",
-                    "matter.recompose",
-                    "matter.render",
-                    "matter.compensate"
-                  ]
-                },
-                "effectClass": {
-                  "enum": [
-                    "derive",
-                    "transform",
-                    "render"
-                  ]
+              "$ref": "#/$defs/TransformationKind"
+            },
+            {
+              "if": {
+                "required": [
+                  "finalStatus"
+                ],
+                "properties": {
+                  "finalStatus": {
+                    "const": "completed"
+                  }
                 }
+              },
+              "then": {
+                "$ref": "#/$defs/CompletedRequirements"
               }
             }
           ]
@@ -5838,6 +5842,88 @@ export const embeddedSchemas: readonly EmbeddedSchema[] = [
             }
           },
           "additionalProperties": false
+        },
+        "TransformationKind": {
+          "properties": {
+            "operationType": {
+              "enum": [
+                "matter.segment",
+                "matter.isolate",
+                "matter.transform",
+                "matter.sculpt",
+                "matter.recompose",
+                "matter.render",
+                "matter.compensate"
+              ]
+            },
+            "effectClass": {
+              "enum": [
+                "derive",
+                "transform",
+                "render"
+              ]
+            }
+          },
+          "required": [
+            "operationType",
+            "effectClass"
+          ]
+        },
+        "CompletedKind": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/TransformationKind"
+            },
+            {
+              "required": [
+                "finalStatus"
+              ],
+              "properties": {
+                "finalStatus": {
+                  "const": "completed"
+                }
+              }
+            }
+          ]
+        },
+        "CompletedRequirements": {
+          "properties": {
+            "finalStatus": {
+              "const": "completed"
+            },
+            "outputs": {
+              "minItems": 1
+            },
+            "parameters": {
+              "type": "object",
+              "required": [
+                "preservationIntent"
+              ],
+              "properties": {
+                "preservationIntent": {
+                  "$ref": "#/$defs/PreservationIntent"
+                }
+              }
+            }
+          }
+        },
+        "TransformationType": {
+          "required": [
+            "operationType"
+          ],
+          "properties": {
+            "operationType": {
+              "enum": [
+                "matter.segment",
+                "matter.isolate",
+                "matter.transform",
+                "matter.sculpt",
+                "matter.recompose",
+                "matter.render",
+                "matter.compensate"
+              ]
+            }
+          }
         }
       }
     }

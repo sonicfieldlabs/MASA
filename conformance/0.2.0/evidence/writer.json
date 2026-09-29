@@ -4,15 +4,15 @@
   "extensions": {},
   "fixtureManifestDigest": {
     "algorithm": "sha-256",
-    "byteLength": 369464,
-    "digest": "007d7261686f5d33e346f0f849616e6036d383192e33340b272d11d66d16aa34",
+    "byteLength": 716691,
+    "digest": "aa5888ddc299cbf8fb781b0da74cc27a0d8d0efab0e66397a2455e8a9f75f166",
     "status": "verified",
-    "verifiedAt": "2026-09-12T20:33:04.330Z"
+    "verifiedAt": "2026-09-26T16:31:53.555Z"
   },
   "id": "urn:uuid:10000000-0000-4000-8000-000000000002",
   "implementation": {
     "name": "MASA local TypeScript reference",
-    "version": "0.2.0"
+    "version": "0.2.1"
   },
   "masaVersion": "0.2.0",
   "migrationStatus": "not_tested",
@@ -22,12 +22,12 @@
     "runtime": "node v22.22.3"
   },
   "profile": "core",
-  "runAt": "2026-09-12T20:33:04.330Z",
+  "runAt": "2026-09-26T16:31:53.555Z",
   "status": "conformant",
   "subject": "@sonicfield/masa workspace",
   "suite": {
     "name": "masa-typescript-reference-conformance",
-    "version": "0.2.0"
+    "version": "0.2.1"
   },
   "tests": [
     {
