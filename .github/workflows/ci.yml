@@ -42,7 +42,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Audit high-severity advisories
-        run: pnpm audit --audit-level high
+        run: node scripts/audit-dependencies.mjs
 
       - name: Run the authoritative repository gate
         run: pnpm check

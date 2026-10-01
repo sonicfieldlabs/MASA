@@ -25,7 +25,7 @@ import { auditEventReceiptSemantics, auditMatterRecordSemantics } from "./semant
 
 export { SCHEMA_IDS } from "./generated/schemas.js";
 export { auditPublicSafety } from "./public-audit.js";
-export { auditEventReceiptSemantics, auditMatterRecordSemantics } from "./semantics.js";
+export { auditDescendantReceipts, type LineageReceipt, auditEventReceiptSemantics, auditMatterRecordSemantics } from "./semantics.js";
 
 const PROFILE_SCHEMA_IDS: Readonly<Record<string, string>> = {
   core: SCHEMA_IDS.profileCore,
@@ -96,6 +96,13 @@ export function validateMatterRecord(value: unknown): ValidationResult<MatterRec
       ...validateStructure<MatterRecord>(schemaId, value, "MASA_PROFILE_MISMATCH").diagnostics,
     );
   }
+  if (isJsonObject(raw.history) && raw.history.mode === "embedded") {
+    asJsonArray(raw.history.events).forEach((event, index) => {
+      diagnostics.push(...validateTransformationReceipt(event).map(item => ({
+        ...item, instancePath: `/history/events/${index}${item.instancePath}`,
+      })));
+    });
+  }
   diagnostics.push(...auditMatterRecordSemantics(structural.value));
   return result(structural.value, diagnostics);
 }
@@ -105,7 +112,17 @@ export function validateOperationReceipt(value: unknown): ValidationResult<Opera
   if (!structural.valid || structural.value === undefined) {
     return structural;
   }
-  return result(structural.value, auditEventReceiptSemantics(structural.value));
+  return result(structural.value, [
+    ...auditEventReceiptSemantics(structural.value), ...validateTransformationReceipt(value),
+  ]);
+}
+
+function validateTransformationReceipt(value: unknown): Diagnostic[] {
+  const kind = validateStructure(SCHEMA_IDS.profileTransformation + "#/$defs/TransformationType", value);
+  return kind.valid ? [...validateStructure(
+    SCHEMA_IDS.profileTransformation + "#/$defs/TransformationOperation", value,
+    "MASA_PROFILE_MISMATCH",
+  ).diagnostics] : [];
 }
 
 export function validateBundleManifest(value: unknown): ValidationResult<BundleManifest> {

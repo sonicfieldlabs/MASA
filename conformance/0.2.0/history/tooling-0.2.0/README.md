@@ -1,0 +1,1 @@
+Historical MASA 0.2.0 tooling evidence, preserved byte for byte from source commit `9d89b1e570ef154a715fdcba5024b8271d1ecd30`. These files describe that earlier implementation and fixture digest; current evidence lives in ../../evidence/.

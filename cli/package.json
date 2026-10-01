@@ -1,6 +1,6 @@
 {
   "name": "@sonicfield/masa-cli",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "private": true,
   "license": "MIT",
   "description": "Local command-line reference implementation for MASA",
@@ -34,7 +34,7 @@
   "devDependencies": {
     "@types/node": "24.13.3",
     "typescript": "7.0.2",
-    "vitest": "4.1.10"
+    "vitest": "4.1.11"
   },
   "engines": {
     "node": ">=22.20"

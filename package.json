@@ -1,6 +1,6 @@
 {
   "name": "@sonicfield/masa-workspace",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "private": true,
   "license": "MIT",
   "description": "Local-first reference repository for the MASA Sound Matter Aware protocol",
@@ -10,10 +10,10 @@
     "node": ">=22.20"
   },
   "scripts": {
-    "generate": "tsx scripts/generate-examples.ts && tsx scripts/generate-capabilities.ts && tsx scripts/generate-artifacts.ts",
+    "generate": "tsx scripts/generate-examples.ts && tsx scripts/generate-lineage-cases.ts && tsx scripts/generate-capabilities.ts && tsx scripts/generate-artifacts.ts",
     "build": "pnpm generate && tsc -b",
     "typecheck": "pnpm generate && tsc -b --pretty false",
-    "test": "vitest run",
+    "test": "node --test scripts/audit-dependencies.test.mjs && vitest run",
     "test:coverage": "vitest run --coverage",
     "schemas:check": "tsx scripts/check-schemas.ts",
     "examples:validate": "tsx scripts/validate-examples.ts",
@@ -23,7 +23,8 @@
     "artifacts:smoke": "tsx scripts/smoke-package-artifacts.ts",
     "check": "pnpm build && pnpm schemas:check && pnpm test && pnpm examples:validate && pnpm conformance && pnpm -r exec publint && pnpm artifacts:inspect && pnpm artifacts:smoke",
     "masa": "tsx cli/src/index.ts",
-    "mcp": "node mcp/dist/server.js"
+    "mcp": "node mcp/dist/server.js",
+    "audit:dependencies": "node scripts/audit-dependencies.mjs"
   },
   "devDependencies": {
     "@modelcontextprotocol/sdk": "1.30.0",
@@ -31,13 +32,22 @@
     "@sonicfield/masa-bundle": "workspace:*",
     "@sonicfield/masa-validator": "workspace:*",
     "@types/node": "24.13.3",
-    "@vitest/coverage-v8": "4.1.10",
+    "@vitest/coverage-v8": "4.1.11",
     "ajv": "8.20.0",
     "ajv-formats": "3.0.1",
     "json-schema-to-typescript": "15.0.4",
     "publint": "0.3.23",
     "tsx": "4.23.11",
     "typescript": "7.0.2",
-    "vitest": "4.1.10"
+    "vitest": "4.1.11"
+  },
+  "pnpm": {
+    "overrides": {
+      "fast-uri@3": "3.1.8",
+      "qs@6": "6.16.0",
+      "js-yaml@4": "4.3.2",
+      "hono@4": "4.13.7",
+      "ip-address@10": "10.7.1"
+    }
   }
 }

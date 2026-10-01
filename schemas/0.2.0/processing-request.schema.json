@@ -29,6 +29,7 @@
     "operationType": {
       "type": "string",
       "enum": [
+        "matter.derive",
         "matter.granulate",
         "matter.extract",
         "matter.reduce",

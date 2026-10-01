@@ -466,3 +466,17 @@ describe("offline MASA validation", () => {
     expect(audit.diagnostics.map(({ code }) => code)).toContain("MASA_POLICY_DENIED");
   });
 });
+
+
+describe("generic external processing derivation", () => {
+  it("requires the same processing lineage for matter.derive", () => {
+    const record = fixture("examples/0.2.0/valid/processing.masa.json") as MatterRecord;
+    const raw = record as unknown as { history: { events: { operationType: string; parameters: unknown }[] }; relations: unknown[] };
+    const event = raw.history.events.find(e => e.operationType === "matter.granulate")!;
+    event.operationType = "matter.derive";
+    event.parameters = { "example:engine": "external transform" };
+    expect(validateMatterRecord(record).valid).toBe(true);
+    raw.relations = [];
+    expect(validateMatterRecord(record).valid).toBe(false);
+  });
+});
