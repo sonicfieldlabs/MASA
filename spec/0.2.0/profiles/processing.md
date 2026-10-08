@@ -6,6 +6,7 @@ The Processing profile carries granular, spectral, and time-pitch operations on 
 
 | Operation | Meaning | Typical lineage predicate |
 | --- | --- | --- |
+| `matter.derive` | Produce a new representation using an explicitly named external engine and recorded parameters; no identity or physical-validity claim is implied. | `masa:derived-from` |
 | `matter.granulate` | Decompose a representation into grains under a declared grain scheme and emit a texture or a fragment set. | `masa:granulated-from` |
 | `matter.extract` | Isolate a spectral band, spectral strata, partial set, or temporal region from a representation. | `masa:isolated-from` |
 | `matter.reduce` | Produce a sparser account of a representation: spectral peaks, envelope, decimation, mixdown, or denoising. | `masa:derived-from` |
@@ -30,3 +31,5 @@ Engines are external. The receipt's Tool names the engine, version, and kind; `p
 ## Listening boundary
 
 When the host attaches an audio-capable model or a listening service, listening passes MAY inform grain selection, strata choice, or region boundaries. Listening evidence stays typed: a heard claim requires a listening pass, a measured claim requires method and units, and neither becomes a processing parameter without an attributable authoring step. Processing outputs MAY be re-listened; a re-listening is a new pass and never overwrites the account of the source.
+
+Generic derivation parameters are engine-specific. The host must validate its engine contract and policy before execution. A processing request does not authorize itself. Reproduction requires source integrity, effective parameters, engine identity/version and any relevant clock, seed, normalization and environmental assumptions in the receipt.

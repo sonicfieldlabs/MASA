@@ -14,6 +14,7 @@ import {
 import { diagnostic } from "./diagnostic.js";
 
 const PROCESSING_OPERATIONS = new Set([
+  "matter.derive",
   "matter.granulate",
   "matter.extract",
   "matter.reduce",
@@ -138,7 +139,8 @@ export function auditEventReceiptSemantics(receipt: OperationReceipt): Diagnosti
   }
 
   if (
-    readString(raw, "finalStatus") === "completed" &&
+    (readString(raw, "finalStatus") === "completed" ||
+      (readString(raw, "finalStatus") === "partial" && outputs.length > 0)) &&
     effectClass !== undefined &&
     CONSEQUENTIAL_EFFECTS.has(effectClass)
   ) {
@@ -149,7 +151,7 @@ export function auditEventReceiptSemantics(receipt: OperationReceipt): Diagnosti
         diagnostic(
           "MASA_POLICY_DENIED",
           "/policyEvaluation/result",
-          "A completed consequential operation lacks an authorizing policy result",
+          "A completed or output-producing partial consequential operation lacks an authorizing policy result",
           "Refuse the operation or attach an attributable permitted policy evaluation before performing it",
         ),
       );
@@ -721,9 +723,16 @@ function auditDerivationGraph(record: Record<string, unknown>): Diagnostic[] {
   return diagnostics;
 }
 
-function auditDescendantReceipts(
+/** Only causal fields are needed when validating bounded external-history summaries. */
+export type LineageReceipt = Pick<OperationReceipt, "id" | "recordId" | "inputs" | "outputs" | "effectClass" | "finalStatus">;
+
+const GENERATING_EFFECTS = new Set([
+  "derive", "transform", "generate", "map", "render", "perform", "remember", "publish",
+]);
+
+export function auditDescendantReceipts(
   record: Record<string, unknown>,
-  eventsById: ReadonlyMap<string, OperationReceipt>,
+  eventsById: ReadonlyMap<string, LineageReceipt>,
   knownIds: ReadonlySet<string>,
 ): Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
@@ -761,6 +770,20 @@ function auditDescendantReceipts(
           "Add the generating OperationReceipt and reference it from the lineage relation",
         ),
       );
+    }
+    const receipt = operationRef === undefined ? undefined : eventsById.get(operationRef);
+    // External IDs remain unresolved evidence until the bundle supplies their receipts.
+    if (receipt !== undefined && (
+      !receipt.inputs.includes(parent) || !receipt.outputs.includes(descendant) ||
+      !(GENERATING_EFFECTS.has(receipt.effectClass) ||
+        (predicate === "masa:captured-from" && receipt.effectClass === "read")) ||
+      !["completed", "partial"].includes(receipt.finalStatus)
+    )) {
+      diagnostics.push(diagnostic(
+        "MASA_DESCENDANT_CAUSALITY", `/relations/${index}/operationRef`,
+        "A descendant must be an actual output of a completed or partial generating receipt that consumed its parent",
+        "Correct the causal assertion; preserve unsuccessful attempts without claiming they generated descendants",
+      ));
     }
     if (descendant === parent) {
       diagnostics.push(
