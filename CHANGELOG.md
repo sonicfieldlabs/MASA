@@ -2,6 +2,12 @@
 
 All material protocol and reference-tooling changes are recorded here. MASA uses semantic versioning; a tooling patch may advance without changing the normative protocol version when its record contracts remain compatible.
 
+## 0.2.2 - unreleased
+
+- Update the reviewed fast-uri 3.x dependency to 3.1.8 and regenerate the 0.2.2 tooling identity. MASA protocol 0.2.0 remains unchanged.
+- Refresh Vitest 4.1.11 and reviewed js-yaml, Hono and ip-address patches in the lock graph.
+- Packed tooling remains a local candidate; no public release is claimed.
+
 ## 0.2.1 - unreleased
 
 Reference-tooling validation erratum for MASA 0.2.0. Record versions and schema identifiers remain 0.2.0; no conforming record needs re-versioning. Previously accepted fabricated lineage and incomplete completed transformations contradicted the existing written requirements and are now rejected. The 0.1.0 resources and historical evidence are preserved.
