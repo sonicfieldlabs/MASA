@@ -16,9 +16,9 @@ export function reviewAudit(raw, cliPackage, lock) {
     const collision = advisory.github_advisory_id === 'GHSA-6cpc-mj5c-m9rq'
       && advisory.module_name === 'cli'
       && Array.isArray(findings) && findings.length === 1
-      && findings[0].version === '0.2.2'
+      && findings[0].version === '0.2.3'
       && JSON.stringify(findings[0].paths) === JSON.stringify(['cli'])
-      && cliPackage.name === '@sonicfield/masa-cli' && cliPackage.version === '0.2.2'
+      && cliPackage.name === '@sonicfield/masa-cli' && cliPackage.version === '0.2.3'
       && !/(?:^|[\s'"/])cli@/m.test(lock);
     if (collision) excluded.push(advisory.github_advisory_id);
     else remaining.push(advisory);

@@ -25,11 +25,11 @@ export const referenceCapabilitySet = {
   "masaVersion": "0.2.0",
   "id": "https://masa.sonicfield.org/capabilities/0.2.0/reference",
   "implementation": {
-    "id": "https://masa.sonicfield.org/implementations/typescript-reference/0.2.2",
+    "id": "https://masa.sonicfield.org/implementations/typescript-reference/0.2.3",
     "name": "MASA local TypeScript reference",
-    "version": "0.2.2"
+    "version": "0.2.3"
   },
-  "generatedAt": "2026-10-01T02:00:16.890Z",
+  "generatedAt": "2026-10-08T23:47:44.000Z",
   "capabilities": [
     {
       "id": "https://masa.sonicfield.org/capabilities/0.2.0/matter.validate",

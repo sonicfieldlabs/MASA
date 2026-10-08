@@ -1,6 +1,6 @@
 {
   "name": "@sonicfield/masa-mcp",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "license": "MIT",
   "description": "Read-oriented local MCP server for MASA",
@@ -27,7 +27,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.30.0",
+    "@modelcontextprotocol/sdk": "1.31.0",
     "@sonicfield/masa": "workspace:*",
     "@sonicfield/masa-bundle": "workspace:*",
     "@sonicfield/masa-validator": "workspace:*",
