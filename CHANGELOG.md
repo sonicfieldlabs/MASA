@@ -1,16 +1,21 @@
 # Changelog
 
-## Unreleased
+## 0.2.3 - 2026-10-08
+
+- Patch the MCP SDK to 1.31.0, proxy-addr to 2.0.8, and source-map-js to 1.2.2 for newly reported advisories.
+- Regenerate tooling identity and conformance evidence for 0.2.3; the normative protocol remains 0.2.0.
+- Keep the dependency audit limited to the exact current local workspace importer collision.
+
+## 0.2.2 - 2026-10-08
 
 - Patch the tooling Hono dependency to 4.13.7 and use a dependency audit that excludes only the exact local workspace importer collision.
 
 All material protocol and reference-tooling changes are recorded here. MASA uses semantic versioning; a tooling patch may advance without changing the normative protocol version when its record contracts remain compatible.
 
-## 0.2.2 - unreleased
 
 - Update the reviewed fast-uri 3.x dependency to 3.1.8 and regenerate the 0.2.2 tooling identity. MASA protocol 0.2.0 remains unchanged.
 - Refresh Vitest 4.1.11 and reviewed js-yaml, Hono and ip-address patches in the lock graph.
-- Packed tooling remains a local candidate; no public release is claimed.
+- Package registry publication remains separate from the Git source release.
 
 ## 0.2.1 - unreleased
 
