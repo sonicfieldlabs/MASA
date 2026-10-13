@@ -16,7 +16,7 @@ const PACKAGE_DIRECTORIES = [
  * Deterministic timestamp for the current reference-tooling release. Keep it
  * explicit so generation never depends on the wall clock or developer locale.
  */
-export const REFERENCE_IMPLEMENTATION_GENERATED_AT = "2026-10-01T02:00:16.890Z";
+export const REFERENCE_IMPLEMENTATION_GENERATED_AT = "2026-10-08T23:47:44.000Z";
 
 /**
  * Read the reference-tooling release from package metadata and fail generation
