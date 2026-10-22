@@ -27,7 +27,7 @@ This repository contains the normative MASA Sound Matter Aware protocol and its 
 
 ## Development
 
-Use Node.js 22.20 or newer and pnpm 10.32.1. Run `pnpm check` before calling the local reference implementation complete. Tests must use isolated temporary directories and may not write into sibling repositories.
+Use Node.js 22.20 or newer and pnpm 10.34.7. Run `pnpm check` before calling the local reference implementation complete. Tests must use isolated temporary directories and may not write into sibling repositories.
 
 Do not add an application-specific term to the `masa:` namespace until at least two implementations justify the promotion and a versioned decision records it. Concrete applications keep their own extension namespaces in their own repositories.
 
