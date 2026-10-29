@@ -27,7 +27,7 @@
     "audit:dependencies": "node scripts/audit-dependencies.mjs"
   },
   "devDependencies": {
-    "@modelcontextprotocol/sdk": "1.32.1",
+    "@modelcontextprotocol/sdk": "1.32.2",
     "@sonicfield/masa": "workspace:*",
     "@sonicfield/masa-bundle": "workspace:*",
     "@sonicfield/masa-validator": "workspace:*",
@@ -36,8 +36,8 @@
     "ajv": "8.20.0",
     "ajv-formats": "3.0.1",
     "json-schema-to-typescript": "15.0.4",
-    "publint": "0.3.23",
-    "tsx": "4.23.11",
+    "publint": "0.3.25",
+    "tsx": "4.23.15",
     "typescript": "7.0.2",
     "vitest": "4.1.12"
   },
