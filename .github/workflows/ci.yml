@@ -38,6 +38,8 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
 
+      - name: Record Node.js runtime
+        run: node --version
       - name: Install exact dependencies
         run: pnpm install --frozen-lockfile
 
