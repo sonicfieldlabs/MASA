@@ -31,7 +31,7 @@
     "@sonicfield/masa": "workspace:*",
     "@sonicfield/masa-bundle": "workspace:*",
     "@sonicfield/masa-validator": "workspace:*",
-    "@types/node": "24.13.3",
+    "@types/node": "26.6.6",
     "@vitest/coverage-v8": "4.1.12",
     "ajv": "8.20.0",
     "ajv-formats": "3.0.1",
